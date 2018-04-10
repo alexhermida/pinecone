@@ -1,0 +1,17 @@
+---
+sudo: false
+language: python
+matrix:
+  include:
+    - python: 3.6
+      env: TOXENV=flake8
+    - python: 3.6
+      env: TOXENV=isort
+install:
+  - pip install tox
+  - pip install coveralls
+script:
+  - cd backend
+  - tox -e $TOXENV
+after_success:
+  - coveralls
