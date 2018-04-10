@@ -15,9 +15,11 @@ django-filter = "*"
 
 [dev-packages]
 
-pytest = "*"
 "flake8" = "*"
 isort = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-django = "*"
 
 
 [requires]
