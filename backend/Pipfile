@@ -8,9 +8,10 @@ name = "pypi"
 [packages]
 
 django = "*"
+django-filter = "*"
+django-model-utils = "*"
 djangorestframework = "*"
 markdown = "*"
-django-filter = "*"
 
 
 [dev-packages]
