@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
 
-from core.models import Event
-
 from rest_framework import serializers, viewsets
+
+from core.models import Event
 
 
 # Serializers define the API representation.
