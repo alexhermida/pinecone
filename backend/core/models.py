@@ -13,4 +13,4 @@ class Event(TimeStampedModel):
     group = models.TextField(_('group'))
     link = models.TextField(_('link'))
     location = models.TextField(_('location'))
-    status = StatusField()
+    status = StatusField(_('status'))
