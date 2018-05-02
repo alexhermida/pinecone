@@ -1,28 +1,23 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [packages]
-
 django = "*"
 django-filter = "*"
 django-model-utils = "*"
 djangorestframework = "*"
 markdown = "*"
-
+django-cors-headers = "*"
 
 [dev-packages]
-
+factory-boy = "*"
 "flake8" = "*"
 isort = "*"
 pytest = "*"
 pytest-cov = "*"
 pytest-django = "*"
 
-
 [requires]
-
 python_version = "3.6"
