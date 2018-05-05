@@ -1,15 +1,39 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '@/components/Hello'
+
+import Home from '@/pages/Home'
+import Login from '@/pages/Login'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
     {
-      path: '/',
-      name: 'Hello',
-      component: Hello
-    }
+      path: '/home/',
+      name: 'home',
+      component: Home,
+      meta: { title: route => { return 'Inicio' } }
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login,
+      meta: { title: route => { return 'Login' } }
+    },
+    { path: '*', redirect: { name: 'home' } }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  const session = JSON.parse(localStorage.getItem(Vue.config.app.sessionName))
+  if (to['name'] !== 'login' && (!session || !session.token)) {
+    return next({ name: 'login' })
+  }
+
+  if (to.meta.title) {
+    document.title = to.meta.title(to)
+  }
+  return next()
+})
+
+export default router
