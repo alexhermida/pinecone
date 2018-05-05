@@ -13,6 +13,6 @@ router.register(r'events', views.EventViewSet)
 urlpatterns = router.urls
 
 urlpatterns += [
-    url(r'^api-token-auth/', obtain_auth_token),
+    url(r'^token-auth/', obtain_auth_token),
     url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

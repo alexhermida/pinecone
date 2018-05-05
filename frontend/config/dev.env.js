@@ -4,5 +4,7 @@ const merge = require('webpack-merge')
 const prodEnv = require('./prod.env')
 
 module.exports = merge(prodEnv, {
-  NODE_ENV: '"development"'
+  APP_NAME: '"Pinecone"',
+  NODE_ENV: '"development"',
+  API_URL: process.env.API_URL || '"http://127.0.0.1:8000/api/"'
 })
