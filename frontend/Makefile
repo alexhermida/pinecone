@@ -7,7 +7,7 @@ build:  ## Build Vue app
 	npm install && npm run build
 
 .PHONY: dev
-dev:  ## Build Vue app
+dev:  ## Vue app development
 	npm install && npm run dev
 
 .PHONY: tar
