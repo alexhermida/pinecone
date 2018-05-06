@@ -5,8 +5,8 @@
         <v-toolbar flat color="red" dark class="transparent">
           <v-list dense>
             <v-list-tile avatar>
-              <v-avatar size="24">
-                <img src="/static/img/logo-vigotech-vertical-150px.png" alt="VigoTech">
+              <v-avatar>
+                <img src="/static/img/logo-simbolo-vigotech.png" alt="VigoTech">
               </v-avatar>
               <v-list-tile-content>
                 <v-list-tile-title class="ml-1">

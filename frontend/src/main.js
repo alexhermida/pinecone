@@ -4,6 +4,7 @@ import 'babel-polyfill'
 
 import Vue from 'vue'
 
+import './filters'
 import router from './router'
 import Vuetify from 'vuetify'
 
