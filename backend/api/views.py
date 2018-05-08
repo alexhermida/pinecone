@@ -8,8 +8,6 @@ from api import serializers
 from core.models import Event
 
 
-
-
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer

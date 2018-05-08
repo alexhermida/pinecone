@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-01 18:32+0200\n"
+"POT-Creation-Date: 2018-05-08 23:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,30 +17,42 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: core/models.py:10
+#: core/models.py:12
 msgid "draft"
 msgstr "borrador"
 
-#: core/models.py:10
+#: core/models.py:12
 msgid "published"
 msgstr "publicado"
 
-#: core/models.py:12
+#: core/models.py:14
 msgid "description"
 msgstr "descrición"
 
-#: core/models.py:13
+#: core/models.py:15
 msgid "group"
 msgstr "grupo"
 
-#: core/models.py:14
+#: core/models.py:16
 msgid "link"
 msgstr "ligazón"
 
-#: core/models.py:15
+#: core/models.py:17
 msgid "location"
 msgstr "localización"
 
-#: core/models.py:16
+#: core/models.py:18
 msgid "status"
 msgstr "estado"
+
+#: core/models.py:20
+msgid "start"
+msgstr "inicio"
+
+#: core/models.py:21
+msgid "end"
+msgstr "fin"
+
+#: core/models.py:23
+msgid "user"
+msgstr "usuario"

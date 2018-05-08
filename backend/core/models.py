@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+
 from django.db import models
 from django.utils.translation import gettext as _
 
@@ -14,3 +16,9 @@ class Event(TimeStampedModel):
     link = models.TextField(_('link'))
     location = models.TextField(_('location'))
     status = StatusField(_('status'))
+
+    start = models.DateTimeField(_('start'), null=True, blank=True)
+    end = models.DateTimeField(_('end'), null=True, blank=True)
+
+    user = models.ForeignKey(User, null=True, verbose_name=_('user'),
+                             on_delete=models.PROTECT)
