@@ -18,6 +18,10 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class EventSerializer(serializers.HyperlinkedModelSerializer):
+    link = serializers.CharField(required=False, allow_blank=True)
+    location = serializers.CharField(required=False, allow_blank=True)
+    url = serializers.CharField(required=False, allow_blank=True)
+
     class Meta:
         model = models.Event
         fields = ('id', 'url', 'description', 'group', 'link', 'location', 'status',

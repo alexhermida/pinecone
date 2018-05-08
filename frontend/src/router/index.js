@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 import Home from '@/pages/Home'
 import Event from '@/pages/Event'
+import EventNew from '@/pages/EventNew'
 import EventList from '@/pages/EventList'
 import Login from '@/pages/Login'
 
@@ -21,6 +22,12 @@ const router = new Router({
       name: 'events-list',
       component: EventList,
       meta: { title: route => { return 'Eventos' } }
+    },
+    {
+      path: '/event-add/',
+      name: 'event-add',
+      component: EventNew,
+      meta: { title: route => { return 'Crear Evento' } }
     },
     {
       path: '/event-detail/',

@@ -29,7 +29,7 @@ class EventStatusViewSet(viewsets.GenericViewSet):
     def list(self, request, *args, **kwargs):
         items = [{'id': key, 'name': value} for key, value in
                  Event.STATUS]
-        print(items)
+
         serializer = self.get_serializer(items, many=True)
         return Response(serializer.data)
 

@@ -1,6 +1,6 @@
 <template>
 <div>
-  <event-modal/>
+  <v-btn color="secondary" dark top right fixed fab slot="activator" to="/event-add/"><v-icon>add</v-icon></v-btn>
   <data-table :items="events" :headers="headers" :loading="loading" :row-action="toDetailRoute">
     <template slot="row" slot-scope="row" >
       <td>{{ row.item.group }}</td>
@@ -18,12 +18,11 @@
 <script>
 import api from '@/api/app'
 import DataTable from '@/components/DataTable'
-import EventModal from '@/partials/EventModal'
 import formMixin from '@/mixins/formMixin'
 import mutationsMixin from '@/mixins/mutationsMixin'
 
 export default {
-  components: {DataTable, EventModal},
+  components: {DataTable},
   mixins: [formMixin, mutationsMixin],
   mounted () {
     this.loading = true

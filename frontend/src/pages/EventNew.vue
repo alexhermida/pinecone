@@ -4,21 +4,7 @@
       <v-container grid-list-lg fill-height>
         <v-form ref="form" enctype="multipart/form-data" novalidate v-model="valid">
           <v-layout wrap>
-            <v-flex xs6 sm4>
-                <v-text-field
-                  v-model="created"
-                  label="Creado"
-                  disabled
-                ></v-text-field>
-              </v-flex>
-              <v-flex xs6 sm4>
-                <v-text-field
-                  v-model="modified"
-                  label="Modificado"
-                  disabled
-                ></v-text-field>
-              </v-flex>
-              <v-flex xs6 sm4>
+              <v-flex xs12>
                 <v-select
                   :items="masters.statuses"
                   v-model="event.status"
@@ -41,6 +27,7 @@
                   @input="fieldErrors.description = []"
                   :error-messages="fieldErrors.description"
                 ></v-text-field>
+              </v-flex>
               <v-flex xs12>
                 <v-text-field
                   v-model="event.group"
@@ -49,7 +36,6 @@
                   @input="fieldErrors.group = []"
                   :error-messages="fieldErrors.group"
                 ></v-text-field>
-              </v-flex>
               </v-flex>
               <v-flex xs12>
                 <v-text-field
@@ -78,7 +64,7 @@
         :disabled="!valid"
         :loading="loading"
         >
-          Guardar
+          Crear
       </v-btn>
     </v-card-actions>
   </v-card>
@@ -95,25 +81,15 @@ export default {
   mounted () {
     this.loading = true
 
-    let p1 = api.getEvent(this.$route.params.id).then(response => {
-      this.event = response
-    })
-
-    let p2 = api.getEventStatuses().then(response => {
+    let p1 = api.getEventStatuses().then(response => {
       this.masters.statuses = response
     })
 
-    Promise.all([p1, p2]).then(() => {
+    Promise.all([p1]).then(() => {
       this.loading = false
     })
   },
   computed: {
-    created () {
-      return this.$options.filters.formatDateTime(this.event.created)
-    },
-    modified () {
-      return this.$options.filters.formatDateTime(this.event.modified)
-    },
     submitData () {
       return {
         status: this.event.status,
@@ -127,25 +103,21 @@ export default {
       event: {},
       descriptionRules: [
         v => !!v || 'Descripción es obligatoria'
-      ],
-      server: {
-        url: api.config().apiURL,
-        process: {
-          url: './events/' + this.$route.params.id + '/',
-          method: 'PATCH',
-          withCredentials: false,
-          headers: api.config().headers,
-          timeout: 7000
-        }
-      }
+      ]
     }
   },
   methods: {
     onSubmit () {
-      return api.editEvent(this.event.id, this.submitData)
+      return api.createEvent(this.event)
     },
-    onSuccess () {
-      this.success('Evento actualizada con éxito')
+    onSuccess (response) {
+      if (this.callback) {
+        this.callback()
+      } else {
+        let route = {name: 'event-detail', params: {'id': response.id}}
+        this.$router.push(route)
+      }
+      this.success('Evento creado con éxito')
     }
   }
 }
