@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import Home from '@/pages/Home'
-// import Event from '@/pages/Event'
+import Event from '@/pages/Event'
 import EventList from '@/pages/EventList'
 import Login from '@/pages/Login'
 
@@ -21,6 +21,12 @@ const router = new Router({
       name: 'events-list',
       component: EventList,
       meta: { title: route => { return 'Eventos' } }
+    },
+    {
+      path: '/event-detail/',
+      name: 'event-detail',
+      component: Event,
+      meta: { title: route => { return 'Evento' } }
     },
     {
       path: '/login',

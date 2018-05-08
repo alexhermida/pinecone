@@ -92,12 +92,13 @@ export default {
     submitData () {
       return {
         status: this.event.status,
-        description: this.event.description,
+        description: this.event.description
       }
     }
   },
   data () {
     return {
+      masters: {},
       event: {},
       descriptionRules: [
         v => !!v || 'Descripción es obligatoria'

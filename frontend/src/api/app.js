@@ -68,6 +68,6 @@ export default {
     return this.request({method: 'patch', data: data}, `events/${id}`, null, headers)
   },
   getEventStatuses () {
-    return this.request({ method: 'get' }, 'event-statuses')
+    return this.request({ method: 'get' }, 'events-statuses')
   }
 }
