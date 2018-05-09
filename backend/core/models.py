@@ -22,3 +22,6 @@ class Event(TimeStampedModel):
 
     user = models.ForeignKey(User, null=True, verbose_name=_('user'),
                              on_delete=models.PROTECT)
+
+    google_calendar_published = models.BooleanField(_('google_cal_published'),
+                                                    default=False)

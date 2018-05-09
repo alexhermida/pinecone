@@ -17,6 +17,11 @@ class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = serializers.EventSerializer
 
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return serializers.EventCreateSerializer
+        return self.serializer_class
+
 
 class EventStatusViewSet(viewsets.GenericViewSet):
     serializer_class = serializers.ChoiceSerializer
@@ -30,4 +35,3 @@ class EventStatusViewSet(viewsets.GenericViewSet):
 
         serializer = self.get_serializer(items, many=True)
         return Response(serializer.data)
-
