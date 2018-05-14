@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 
 from rest_framework import serializers
 
-from core import models
+from core import models, services
 
 
 class ChoiceSerializer(serializers.Serializer):
@@ -58,7 +58,33 @@ class EventCreateSerializer(serializers.ModelSerializer):
 
     def save(self):
         if self.validated_data.get('google_calendar_published'):
-            print('google cal published')
+            self.create_google_calendar_event(self.validated_data)
         user = self.context.get("request").user
 
         return super().save(user=user)
+
+    def create_google_calendar_event(self, data):
+        gCalendar = services.GoogleCalendarService()
+        gCalendar.initialize()
+
+        group = data['group']
+        title = data['title']
+        summary = f'{group} - {title}'
+        description = data['description']
+        location = data['location']
+        startime = data['start'].isoformat()
+        endtime = data['end'].isoformat()
+
+        event = {
+            'summary': summary,
+            'location': location,
+            'description': description,
+            'start': {
+                'dateTime': startime,
+            },
+            'end': {
+                'dateTime': endtime,
+            },
+        }
+
+        gCalendar.create_event(event)
