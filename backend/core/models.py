@@ -25,4 +25,4 @@ class Event(TimeStampedModel):
 
     google_calendar_published = models.BooleanField(_('google_cal_published'),
                                                     default=False)
-    google_event_id = models.TextField(_('google event id'))
+    google_event_id = models.TextField(_('google event id'), null=True)
