@@ -51,14 +51,14 @@ class EventCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Event
-        fields = ('id', 'url','title', 'description', 'group', 'link',
+        fields = ('id', 'url', 'title', 'description', 'group', 'link',
                   'location', 'start', 'end', 'status', 'user', 'created',
                   'modified', 'google_calendar_published')
 
         read_only_fields = 'created', 'modified', 'google_event_id'
 
     def save(self):
-        event_id=None
+        event_id = None
         if self.validated_data.get('google_calendar_published'):
             event_id = self.create_google_calendar_event()
         user = self.context.get("request").user
@@ -69,7 +69,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
         """
         Create event in Google Calendar
         """
-        #TODO Refactor to celery
+        # TODO Refactor to celery
         gcalendar = services.GoogleCalendarService()
         gcalendar.initialize()
 
