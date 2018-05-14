@@ -34,6 +34,15 @@
               </v-flex>
               <v-flex xs12>
                 <v-text-field
+                  v-model="event.title"
+                  label="Título"
+                  required
+                  @input="fieldErrors.title = []"
+                  :error-messages="fieldErrors.title"
+                ></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field
                   v-model="event.description"
                   label="Descripción"
                   multi-line
@@ -41,7 +50,8 @@
                   @input="fieldErrors.description = []"
                   :error-messages="fieldErrors.description"
                 ></v-text-field>
-              <v-flex xs12>
+              </v-flex>
+              <v-flex xs6 sm4>
                 <v-text-field
                   v-model="event.group"
                   label="Grupo"
@@ -50,8 +60,7 @@
                   :error-messages="fieldErrors.group"
                 ></v-text-field>
               </v-flex>
-              </v-flex>
-              <v-flex xs12>
+              <v-flex xs6 sm4>
                 <v-text-field
                   v-model="event.link"
                   label="Enlace"
@@ -59,13 +68,21 @@
                   :error-messages="fieldErrors.link"
                 ></v-text-field>
               </v-flex>
-              <v-flex xs12>
+              <v-flex xs6 sm4>
                 <v-text-field
                   v-model="event.location"
                   label="Localización"
                   @input="fieldErrors.location = []"
                   :error-messages="fieldErrors.location"
                 ></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-switch
+                  v-model="event.google_calendar_published"
+                  label="Publicar Google Calendar"
+                  @input="fieldErrors.google_calendar_published = []"
+                  :error-messages="fieldErrors.google_calendar_published"
+                ></v-switch>
               </v-flex>
           </v-layout>
         </v-form>

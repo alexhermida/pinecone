@@ -7,6 +7,7 @@
       <td>{{ row.item.location }}</td>
       <td>{{ row.item.description }}</td>
       <td>{{ row.item.status }}</td>
+      <td>{{ row.item.google_calendar_published ? "Si" : "No" }}</td>
       <td>{{ row.item.created|format-date-time }}</td>
       <td>{{ row.item.modified|format-date-time }}</td>
     </template>
@@ -58,6 +59,12 @@ export default {
           align: 'left',
           sortable: true,
           value: 'status'
+        },
+        {
+          text: 'Google calendar',
+          align: 'left',
+          sortable: true,
+          value: 'google_calendar_published'
         },
         {
           text: 'Creado',

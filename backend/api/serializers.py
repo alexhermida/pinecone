@@ -53,9 +53,9 @@ class EventCreateSerializer(serializers.ModelSerializer):
         model = models.Event
         fields = ('id', 'url','title', 'description', 'group', 'link',
                   'location', 'start', 'end', 'status', 'user', 'created',
-                  'modified', 'google_calendar_published', 'google_event_id')
+                  'modified', 'google_calendar_published')
 
-        read_only_fields = 'created', 'modified'
+        read_only_fields = 'created', 'modified', 'google_event_id'
 
     def save(self):
         event_id=None
@@ -103,7 +103,9 @@ class EventCreateSerializer(serializers.ModelSerializer):
         Check if there are start&end datetimes to publish in Google Calendar.
         """
         if data['google_calendar_published'] and (
+            data['status'] != 'published' or
                 not data.get('start') or not data.get('end')):
             raise serializers.ValidationError(
-                _('You must enter start/end datetime to publish in GoogleCal'))
+                _('You must enter start/end datetime and update the status'
+                  ' to publish in Google Calendar'))
         return data
