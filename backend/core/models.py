@@ -11,6 +11,7 @@ from model_utils.models import TimeStampedModel
 class Event(TimeStampedModel):
     STATUS = Choices(('draft', _('draft')), ('published', _('published')))
 
+    title = models.TextField(_('title'), null=True)
     description = models.TextField(_('description'))
     group = models.TextField(_('group'))
     link = models.TextField(_('link'))
