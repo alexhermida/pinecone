@@ -148,3 +148,11 @@ REST_FRAMEWORK = {
 # https://github.com/ottoyiu/django-cors-headers/#configuration
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+# Google Calendar configuration
+
+GOOGLE_CALENDAR_CREDENTIALS = os.path.join(PROJECT_DIR,
+                                           os.environ.get(
+                                               'CALENDAR_CREDENTIALS_FILE',
+                                               ''))
+GOOGLE_CALENDAR_ID = os.environ.get('GOOGLE_CALENDAR_ID', None)
