@@ -41,7 +41,7 @@ class EventViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.EventSerializer
 
     def get_serializer_class(self):
-        if self.action == 'create':
+        if self.action in ('create', 'update'):
             return serializers.EventCreateSerializer
         return self.serializer_class
 

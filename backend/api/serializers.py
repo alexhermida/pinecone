@@ -44,9 +44,9 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Event
-        fields = ('id', 'url', 'description', 'group', 'link', 'location',
-                  'start', 'end', 'status', 'user', 'created', 'modified',
-                  'google_calendar_published', 'google_event_id')
+        fields = ('id', 'url', 'title', 'description', 'group', 'link',
+                  'location', 'start', 'end', 'status', 'user', 'created',
+                  'modified', 'google_calendar_published', 'google_event_id')
 
 
 class EventCreateSerializer(serializers.ModelSerializer):
@@ -65,7 +65,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
         model = models.Event
         fields = ('id', 'url', 'title', 'description', 'group', 'link',
                   'location', 'start', 'end', 'status', 'user', 'created',
-                  'modified', 'google_calendar_published')
+                  'modified', 'google_calendar_published', 'google_event_id')
 
         read_only_fields = 'created', 'modified', 'google_event_id'
 

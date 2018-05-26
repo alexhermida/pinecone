@@ -1,8 +1,12 @@
 <script>
 import _ from 'lodash'
 
+import DatePicker from '@/components/DatePicker'
+import TimePicker from '@/components/TimePicker'
+
 export default {
   name: 'formMixin',
+  components: {DatePicker, TimePicker},
   data () {
     return {
       fieldErrors: {},
