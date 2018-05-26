@@ -12,6 +12,18 @@ class ChoiceSerializer(serializers.Serializer):
 
 
 # Serializers define the API representation.
+class UserProfileSerializer(serializers.ModelSerializer):
+    fullname = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'fullname')
+        read_only_fields = ('id', 'username', 'fullname')
+
+    def get_fullname(self, instance):
+        return f'{instance.first_name} {instance.last_name}'
+
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
