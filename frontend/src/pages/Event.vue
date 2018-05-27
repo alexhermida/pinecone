@@ -231,6 +231,11 @@ export default {
     },
     onSuccess () {
       this.success('Evento actualizada con éxito')
+    },
+    onError () {
+      if (this.nonFieldErrors) {
+        this.error(this.nonFieldErrors.join(' '))
+      }
     }
   }
 }
