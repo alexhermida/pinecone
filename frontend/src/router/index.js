@@ -30,10 +30,10 @@ const router = new Router({
       meta: { title: route => { return 'Crear Evento' } }
     },
     {
-      path: '/event-detail/',
+      path: '/event-detail/:id',
       name: 'event-detail',
       component: Event,
-      meta: { title: route => { return 'Evento' } }
+      meta: { title: route => { return 'Evento' + route.params.id } }
     },
     {
       path: '/login',

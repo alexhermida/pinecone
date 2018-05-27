@@ -114,10 +114,21 @@ class EventCreateSerializer(serializers.ModelSerializer):
         """
         Check if there are start&end datetimes to publish in Google Calendar.
         """
-        if data['google_calendar_published'] and (
-            data['status'] != 'published' or
-                not data.get('start') or not data.get('end')):
+        if not data['google_calendar_published']:
+            return data
+
+        status = data.get('status')
+        start = data.get('start')
+        end = data.get('end')
+
+        if status != 'published' or not start or not end:
             raise serializers.ValidationError(
                 _('You must enter start/end datetime and update the status'
                   ' to publish in Google Calendar'))
+
+        if start > end:
+            raise serializers.ValidationError(
+                _('You must enter the start date and time before the '
+                  'event end'))
+
         return data

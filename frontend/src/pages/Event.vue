@@ -76,6 +76,31 @@
                   :error-messages="fieldErrors.location"
                 ></v-text-field>
               </v-flex>
+              <v-flex xs12 sm6>
+                <date-picker
+                    :date.sync="startDate"
+                    label="Fecha comienzo"
+                    @change="fieldErrors.start = []"/>
+              </v-flex>
+              <v-flex xs12 sm6>
+                <time-picker
+                  :time.sync="startTime"
+                  @change="fieldErrors.start = []"
+                  label="Hora comienzo"/>
+              </v-flex>
+              <v-flex xs12 sm6>
+                <date-picker
+                  :date.sync="endDate"
+                  label="Fecha fin"
+                  @change="fieldErrors.end = []"
+                  :error-messages="fieldErrors.end"/>
+              </v-flex>
+              <v-flex xs12 sm6>
+                <time-picker
+                  :time.sync="endTime"
+                  @change="fieldErrors.end = []"
+                  label="Hora fin"/>
+              </v-flex>
               <v-flex xs12>
                 <v-switch
                   v-model="event.google_calendar_published"
@@ -108,6 +133,7 @@ import formMixin from '@/mixins/formMixin'
 import mutationsMixin from '@/mixins/mutationsMixin'
 
 export default {
+  props: ['errors'],
   mixins: [formMixin, mutationsMixin],
   mounted () {
     this.loading = true
@@ -134,7 +160,11 @@ export default {
     submitData () {
       return {
         status: this.event.status,
-        description: this.event.description
+        description: this.event.description,
+        title: this.event.title,
+        start: this.$options.filters.joinDateTime(this.event.startDate, this.event.startTime),
+        end: this.$options.filters.joinDateTime(this.event.endDate, this.event.endTime),
+        google_calendar_published: this.event.google_calendar_published
       }
     }
   },
@@ -147,14 +177,52 @@ export default {
       ],
       server: {
         url: api.config().apiURL,
-        process: {
+        event: {
           url: './events/' + this.$route.params.id + '/',
           method: 'PATCH',
           withCredentials: false,
           headers: api.config().headers,
           timeout: 7000
         }
+      },
+      startDate: null,
+      startTime: null,
+      endDate: null,
+      endTime: null
+    }
+  },
+  watch: {
+    valid () {
+      this.$emit('update:isValid', this.valid)
+    },
+    event () {
+      const startDateTime = this.$options.filters.splitDateTime(this.event.start)
+      if (startDateTime) {
+        this.startDate = startDateTime.date
+        this.startTime = startDateTime.time
       }
+      const endDateTime = this.$options.filters.splitDateTime(this.event.end)
+      if (endDateTime) {
+        this.endDate = endDateTime.date
+        this.endTime = endDateTime.time
+      }
+    },
+    startDate () {
+      console.log('updating startdate..')
+      this.event.startDate = this.startDate
+      this.$emit('update:event', this.event)
+    },
+    startTime () {
+      this.event.startTime = this.startTime
+      this.$emit('update:event', this.event)
+    },
+    endDate () {
+      this.event.endDate = this.endDate
+      this.$emit('update:event', this.event)
+    },
+    endTime () {
+      this.event.endTime = this.endTime
+      this.$emit('update:event', this.event)
     }
   },
   methods: {

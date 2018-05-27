@@ -5,6 +5,7 @@
     <template slot="row" slot-scope="row" >
       <td>{{ row.item.group }}</td>
       <td>{{ row.item.location }}</td>
+      <td>{{ row.item.title }}</td>
       <td>{{ row.item.description }}</td>
       <td>{{ row.item.status }}</td>
       <td>{{ row.item.google_calendar_published ? "Si" : "No" }}</td>
@@ -47,6 +48,12 @@ export default {
           align: 'left',
           sortable: true,
           value: 'location'
+        },
+        {
+          text: 'Título',
+          align: 'left',
+          sortable: true,
+          value: 'title'
         },
         {
           text: 'Descripción',
