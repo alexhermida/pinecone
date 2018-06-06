@@ -18,7 +18,16 @@
                   required
                 ></v-select>
               </v-flex>
-              <v-flex xs12>
+              <v-flex xs12 md3>
+                <v-text-field
+                  v-model="event.group"
+                  label="Grupo"
+                  required
+                  @input="fieldErrors.group = []"
+                  :error-messages="fieldErrors.group"
+                ></v-text-field>
+              </v-flex>
+              <v-flex xs12 md9>
                 <v-text-field
                   v-model="event.title"
                   label="Título"
@@ -35,15 +44,6 @@
                   :rules="descriptionRules" class="textarea" required
                   @input="fieldErrors.description = []"
                   :error-messages="fieldErrors.description"
-                ></v-text-field>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field
-                  v-model="event.group"
-                  label="Grupo"
-                  required
-                  @input="fieldErrors.group = []"
-                  :error-messages="fieldErrors.group"
                 ></v-text-field>
               </v-flex>
               <v-flex xs12>
@@ -132,19 +132,6 @@ export default {
       this.loading = false
     })
   },
-  computed: {
-    submitData () {
-      return {
-        status: this.event.status,
-        title: this.event.title,
-        description: this.event.description,
-        startDate: null,
-        startTime: null,
-        endDate: null,
-        endTime: null
-      }
-    }
-  },
   data () {
     return {
       masters: {},
@@ -192,8 +179,21 @@ export default {
     }
   },
   methods: {
+    submitData () {
+      return {
+        group: this.event.group,
+        status: this.event.status,
+        title: this.event.title,
+        description: this.event.description,
+        link: this.event.link,
+        location: this.event.location,
+        start: this.$options.filters.joinDateTime(this.event.startDate, this.event.startTime),
+        end: this.$options.filters.joinDateTime(this.event.endDate, this.event.endTime),
+        google_calendar_published: this.event.google_calendar_published
+      }
+    },
     onSubmit () {
-      return api.createEvent(this.event)
+      return api.createEvent(this.submitData())
     },
     onSuccess (response) {
       if (this.callback) {

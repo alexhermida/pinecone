@@ -101,13 +101,16 @@
                   @change="fieldErrors.end = []"
                   label="Hora fin"/>
               </v-flex>
-              <v-flex xs12>
+              <v-flex xs12 sm6>
                 <v-switch
                   v-model="event.google_calendar_published"
                   label="Publicar Google Calendar"
                   @input="fieldErrors.google_calendar_published = []"
                   :error-messages="fieldErrors.google_calendar_published"
                 ></v-switch>
+              </v-flex>
+              <v-flex xs12 sm6>
+                <v-btn :disabled="disableCalendarBtn()" round color="primary" :href="event.google_event_htmllink" target="_blank">Abrir no calendario</v-btn>
               </v-flex>
           </v-layout>
         </v-form>
@@ -156,16 +159,6 @@ export default {
     },
     modified () {
       return this.$options.filters.formatDateTime(this.event.modified)
-    },
-    submitData () {
-      return {
-        status: this.event.status,
-        description: this.event.description,
-        title: this.event.title,
-        start: this.$options.filters.joinDateTime(this.event.startDate, this.event.startTime),
-        end: this.$options.filters.joinDateTime(this.event.endDate, this.event.endTime),
-        google_calendar_published: this.event.google_calendar_published
-      }
     }
   },
   data () {
@@ -188,7 +181,8 @@ export default {
       startDate: null,
       startTime: null,
       endDate: null,
-      endTime: null
+      endTime: null,
+      disableCalendarButton: true
     }
   },
   watch: {
@@ -226,8 +220,21 @@ export default {
     }
   },
   methods: {
+    submitData () {
+      return {
+        group: this.event.group,
+        status: this.event.status,
+        title: this.event.title,
+        description: this.event.description,
+        link: this.event.link,
+        location: this.event.location,
+        start: this.$options.filters.joinDateTime(this.event.startDate, this.event.startTime),
+        end: this.$options.filters.joinDateTime(this.event.endDate, this.event.endTime),
+        google_calendar_published: this.event.google_calendar_published
+      }
+    },
     onSubmit () {
-      return api.editEvent(this.event.id, this.submitData)
+      return api.editEvent(this.event.id, this.submitData())
     },
     onSuccess () {
       this.success('Evento actualizada con éxito')
@@ -236,6 +243,10 @@ export default {
       if (this.nonFieldErrors) {
         this.error(this.nonFieldErrors.join(' '))
       }
+    },
+    disableCalendarBtn () {
+      this.disableCalendarButton = !this.event.google_event_htmllink
+      return this.disableCalendarButton
     }
   }
 }

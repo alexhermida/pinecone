@@ -46,7 +46,9 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
         model = models.Event
         fields = ('id', 'url', 'title', 'description', 'group', 'link',
                   'location', 'start', 'end', 'status', 'user', 'created',
-                  'modified', 'google_calendar_published', 'google_event_id')
+                  'modified', 'google_calendar_published', 'google_event_id',
+                  'google_event_htmllink')
+        read_only_fields = ('google_event_htmllink',)
 
 
 class EventCreateSerializer(serializers.ModelSerializer):
@@ -72,10 +74,11 @@ class EventCreateSerializer(serializers.ModelSerializer):
     def save(self):
         event_id = None
         if self.validated_data.get('google_calendar_published'):
-            event_id = self.create_google_calendar_event()
+            event_id, html_link = self.create_google_calendar_event()
         user = self.context.get("request").user
 
-        return super().save(user=user, google_event_id=event_id)
+        return super().save(user=user, google_event_id=event_id,
+                            google_event_htmllink=html_link)
 
     def create_google_calendar_event(self):
         """
@@ -107,14 +110,15 @@ class EventCreateSerializer(serializers.ModelSerializer):
 
         created_event = gcalendar.create_event(event)
         event_id = created_event.get('id')
+        event_htmllink = created_event.get('htmlLink')
 
-        return event_id
+        return event_id, event_htmllink
 
     def validate(self, data):
         """
         Check if there are start&end datetimes to publish in Google Calendar.
         """
-        if not data['google_calendar_published']:
+        if not data.get('google_calendar_published'):
             return data
 
         status = data.get('status')
@@ -123,8 +127,8 @@ class EventCreateSerializer(serializers.ModelSerializer):
 
         if status != 'published' or not start or not end:
             raise serializers.ValidationError(
-                _('You must enter start/end datetime and update the status'
-                  ' to publish in Google Calendar'))
+                _('To publish in Google Calendar you must enter start/end '
+                  'datetime and update the status'))
 
         if start > end:
             raise serializers.ValidationError(
