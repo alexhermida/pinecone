@@ -1,7 +1,13 @@
 <template>
 <div>
   <v-btn color="secondary" dark top right fixed fab slot="activator" to="/event-add/"><v-icon>add</v-icon></v-btn>
-  <data-table :items="events" :headers="headers" :loading="loading" :row-action="toDetailRoute">
+  <data-table
+  :items="events"
+  :headers="headers"
+  :loading="loading"
+  :row-action="toDetailRoute"
+  v-bind:pagination.sync="pagination"
+  hide-actions>
     <template slot="row" slot-scope="row" >
       <td>{{ row.item.group }}</td>
       <td>{{ row.item.location }}</td>
@@ -27,6 +33,7 @@ import mutationsMixin from '@/mixins/mutationsMixin'
 
 export default {
   components: {DataTable},
+  pagination: {'sortBy': 'start', 'descending': false},
   mixins: [formMixin, mutationsMixin],
   mounted () {
     this.loading = true

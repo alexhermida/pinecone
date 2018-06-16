@@ -73,6 +73,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
 
     def save(self):
         event_id = None
+        html_link = None
         if self.validated_data.get('google_calendar_published'):
             event_id, html_link = self.create_google_calendar_event()
         user = self.context.get("request").user
