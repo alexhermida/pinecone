@@ -10,6 +10,8 @@ class GoogleCalendarService:
         self.service = None
         self.calendarId = settings.GOOGLE_CALENDAR_ID
 
+        self.initialize()
+
     def initialize(self):
         creds = ServiceAccountCredentials.from_json_keyfile_name(
             settings.GOOGLE_CALENDAR_CREDENTIALS,

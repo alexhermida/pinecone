@@ -1,3 +1,5 @@
+import datetime as dt
+
 import pytest
 from django.utils.translation import gettext as _
 
@@ -44,6 +46,30 @@ def test_prevent_create_event_without_group(admin_client):
 def test_prevent_publish_gcal_event_without_dates(admin_client):
     data = {'description': 'descrición evento test',
             'group': 'VigoTechGroup',
+            'google_calendar_published': True}
+    response = admin_client.post('/api/events/', data)
+
+    assert response.status_code == 400
+    assert response.json()['non_field_errors'] == [
+        _('To publish in Google Calendar you must enter start/end '
+          'datetime and update the status')]
+
+
+def test_prevent_publish_gcal_event_without_start_date(admin_client):
+    data = {'description': 'descrición evento test',
+            'group': 'VigoTechGroup', 'end': dt.datetime.now(),
+            'google_calendar_published': True}
+    response = admin_client.post('/api/events/', data)
+
+    assert response.status_code == 400
+    assert response.json()['non_field_errors'] == [
+        _('To publish in Google Calendar you must enter start/end '
+          'datetime and update the status')]
+
+
+def test_prevent_publish_gcal_event_without_end_date(admin_client):
+    data = {'description': 'descrición evento test',
+            'group': 'VigoTechGroup', 'end': dt.datetime.now(),
             'google_calendar_published': True}
     response = admin_client.post('/api/events/', data)
 

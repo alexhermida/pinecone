@@ -4,16 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "*"
+Django = "*"
 django-filter = "*"
 django-model-utils = "*"
 djangorestframework = "*"
-markdown = "*"
+Markdown = "*"
 django-cors-headers = "*"
 google-api-python-client = "*"
 
 [dev-packages]
-factory-boy = "*"
+factory_boy = "*"
 "flake8" = "*"
 isort = "*"
 pytest = "*"
