@@ -1,6 +1,7 @@
 import datetime as dt
 
 import pytest
+
 from django.utils.translation import gettext as _
 
 
