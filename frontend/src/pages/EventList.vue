@@ -6,7 +6,6 @@
   :headers="headers"
   :loading="loading"
   :row-action="toDetailRoute"
-  v-bind:pagination.sync="pagination"
   hide-actions>
     <template slot="row" slot-scope="row" >
       <td>{{ row.item.group }}</td>

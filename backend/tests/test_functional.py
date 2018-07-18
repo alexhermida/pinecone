@@ -23,6 +23,15 @@ def test_authenticated(admin_client):
     assert response.status_code == 200
 
 
+def test_get_closest_events(admin_client):
+    [factories.EventFactory() for _ in range(0, 10)]
+
+    response = admin_client.get('/api/events-closests/')
+
+    assert response.status_code == 200
+    assert len(response.json()) == 5
+
+
 def test_create_event_with_required_fields(admin_client):
     data = {'description': 'descrición evento test',
             'group': 'VigoTechGroup'}
@@ -79,12 +88,3 @@ def test_prevent_publish_gcal_event_without_end_date(admin_client):
     assert response.json()['non_field_errors'] == [
         _('To publish in Google Calendar you must enter start/end '
           'datetime and update the status')]
-
-
-def test_get_closest_events(admin_client):
-    [factories.EventFactory() for _ in range(0, 10)]
-
-    response = admin_client.get('/api/events-closests/')
-
-    assert response.status_code == 200
-    assert len(response.json()) == 5

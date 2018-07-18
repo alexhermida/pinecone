@@ -34,6 +34,14 @@
               <v-list-tile-title>{{ item.title }}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
+          <v-list-tile href="https://vigotech.org/" target="_blank">
+            <v-list-tile-action>
+              <v-icon>web</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>https://vigotech.org</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
           <v-list-tile @click="logOut()">
             <v-list-tile-action>
               <v-icon>exit_to_app</v-icon>
