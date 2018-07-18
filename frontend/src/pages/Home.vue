@@ -7,35 +7,74 @@
       </v-flex>
     </v-layout>
   </v-container>
+  <v-container
+    fluid
+    grid-list-md
+  >
+    <v-layout row wrap>
+      <v-flex
+        v-for="(card, index) in events"
+        v-bind:class="{ xs12: index == 0 }"
+        :key="card.id"
+      >
+        <v-card>
+          <v-card-media
+            :src=card.src
+            height="100px"
+          >
+          </v-card-media>
 
-  <v-jumbotron>
-      <v-layout>
-        <v-flex>
-          <v-list two-line subheader>
-            <v-list-tile v-for="item in items" :key="item.title" avatar @click="toRoute(item.route)">
-              <v-list-tile-avatar>
-                <v-icon :class="[item.iconClass]">{{ item.icon }}</v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-content>
-                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-        </v-flex>
-      </v-layout>
-  </v-jumbotron>
+          <v-card-title primary-title>
+            <div>
+              <div class="headline">{{ card.title }}</div>
+              <span class="grey--text">{{ card.group }}</span>
+            </div>
+          </v-card-title>
+
+          <v-card-actions>
+            <v-btn flat>Review</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn icon @click="show = !show">
+              <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
+            </v-btn>
+          </v-card-actions>
+
+          <v-slide-y-transition>
+            <v-card-text v-show="show">
+              {{ card.description }}
+            </v-card-text>
+          </v-slide-y-transition>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
+
 </div>
 </template>
 
 <script>
+  import api from '@/api/app'
   import { mapState } from 'vuex'
   import mutationsMixin from '@/mixins/mutationsMixin'
 
   export default {
+    mixins: [mutationsMixin],
+    mounted () {
+      this.loading = true
+
+      api.getEventClosets().then(response => {
+        this.events = response
+        this.loading = false
+      })
+    },
+    data () {
+      return {
+        events: [],
+        show: false
+      }
+    },
     computed: mapState({
       items: state => state.menu
-    }),
-    mixins: [mutationsMixin]
+    })
   }
 </script>

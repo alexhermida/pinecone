@@ -69,5 +69,8 @@ export default {
   },
   getEventStatuses () {
     return this.request({ method: 'get' }, 'events-statuses')
+  },
+  getEventClosets () {
+    return this.request({ method: 'get' }, 'events-closests')
   }
 }
