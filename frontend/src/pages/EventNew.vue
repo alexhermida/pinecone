@@ -117,10 +117,11 @@
 <script>
 import api from '@/api/app'
 import formMixin from '@/mixins/formMixin'
+import mutationsMixin from '@/mixins/mutationsMixin'
 
 export default {
   props: ['isValid', 'showCancel', 'title', 'actionName'],
-  mixins: [formMixin],
+  mixins: [formMixin, mutationsMixin],
   mounted () {
     this.loading = true
 

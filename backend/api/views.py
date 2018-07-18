@@ -37,7 +37,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class EventViewSet(viewsets.ModelViewSet):
-    queryset = Event.objects.all()
+    queryset = Event.objects.all().order_by('-id')
     serializer_class = serializers.EventSerializer
 
     def get_serializer_class(self):

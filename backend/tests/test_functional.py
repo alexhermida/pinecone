@@ -32,6 +32,16 @@ def test_get_closest_events(admin_client):
     assert len(response.json()) == 5
 
 
+def test_get_events_descendent_order(admin_client):
+    [factories.EventFactory() for _ in range(0, 10)]
+
+    response = admin_client.get('/api/events/')
+
+    assert response.status_code == 200
+    assert len(response.json()) == 10
+    assert response.json()[0]['id'] == 10
+
+
 def test_create_event_with_required_fields(admin_client):
     data = {'description': 'descrición evento test',
             'group': 'VigoTechGroup'}
