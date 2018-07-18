@@ -23,7 +23,7 @@ def test_authenticated(admin_client):
     assert response.status_code == 200
 
 
-def test_get_closest_events(admin_client):
+def test_get_open_closest_events(admin_client):
     [factories.EventFactory() for _ in range(0, 10)]
 
     response = admin_client.get('/api/events-closests/')
