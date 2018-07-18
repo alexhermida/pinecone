@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 
-from rest_framework import viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
@@ -58,3 +58,9 @@ class EventStatusViewSet(viewsets.GenericViewSet):
 
         serializer = self.get_serializer(items, many=True)
         return Response(serializer.data)
+
+
+class ClosetsEventViewSet(mixins.ListModelMixin,
+                          viewsets.GenericViewSet):
+    queryset = Event.objects.all().order_by('-id')[:5]
+    serializer_class = serializers.EventSerializer

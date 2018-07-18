@@ -4,6 +4,7 @@ import pytest
 
 from django.utils.translation import gettext as _
 
+from core import factories
 
 @pytest.mark.django_db
 def test_admin(client):
