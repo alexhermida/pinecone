@@ -202,7 +202,6 @@ export default {
       }
     },
     startDate () {
-      console.log('updating startdate..')
       this.event.startDate = this.startDate
       this.$emit('update:event', this.event)
     },

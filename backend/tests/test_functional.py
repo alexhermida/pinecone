@@ -2,10 +2,11 @@ import datetime as dt
 
 import pytest
 
-from django.utils.translation import gettext as _
 from django.utils.timezone import make_aware
+from django.utils.translation import gettext as _
 
 from core import factories
+
 
 @pytest.mark.django_db
 def test_admin(client):
@@ -39,7 +40,6 @@ def test_get_open_closest_events(admin_client):
     assert len(response.json()) == 1
     assert response.json()[0]['start'] == future_start_date.strftime(
         '%Y-%m-%dT%H:%M:%SZ')
-
 
 
 def test_get_events_descendent_order(admin_client):
