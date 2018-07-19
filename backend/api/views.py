@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 from rest_framework import mixins, viewsets
 from rest_framework.authtoken.models import Token
@@ -62,5 +63,8 @@ class EventStatusViewSet(viewsets.GenericViewSet):
 
 class ClosetsEventViewSet(mixins.ListModelMixin,
                           viewsets.GenericViewSet):
-    queryset = Event.objects.all().order_by('-id')[:5]
     serializer_class = serializers.EventSerializer
+
+    def get_queryset(self):
+        return Event.objects.filter(start__gte=timezone.now()).order_by(
+            '-id')

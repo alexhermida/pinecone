@@ -3,6 +3,7 @@ import datetime as dt
 import pytest
 
 from django.utils.translation import gettext as _
+from django.utils.timezone import make_aware
 
 from core import factories
 
@@ -24,12 +25,21 @@ def test_authenticated(admin_client):
 
 
 def test_get_open_closest_events(admin_client):
-    [factories.EventFactory() for _ in range(0, 10)]
+    start_date = make_aware(dt.datetime(2017, 1, 1, 10))
+
+    [factories.EventFactory(start=start_date) for _ in
+     range(0, 10)]
+
+    future_start_date = make_aware(dt.datetime(2100, 1, 1, 8))
+    factories.EventFactory(start=future_start_date)
 
     response = admin_client.get('/api/events-closests/')
 
     assert response.status_code == 200
-    assert len(response.json()) == 5
+    assert len(response.json()) == 1
+    assert response.json()[0]['start'] == future_start_date.strftime(
+        '%Y-%m-%dT%H:%M:%SZ')
+
 
 
 def test_get_events_descendent_order(admin_client):
