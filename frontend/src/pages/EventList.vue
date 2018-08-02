@@ -10,8 +10,8 @@
     <template slot="row" slot-scope="row" >
       <td>{{ row.item.group }}</td>
       <td>{{ row.item.location }}</td>
-      <td>{{ row.item.title }}</td>
-      <td>{{ row.item.description }}</td>
+      <td><div class='list-item'>{{ row.item.title }}</div></td>
+      <td><div class='list-item'>{{ row.item.description }}</div></td>
       <td>{{ row.item.status }}</td>
       <td>{{ row.item.google_calendar_published ? "Si" : "No" }}</td>
       <td>{{ row.item.start|format-date-time }}</td>
