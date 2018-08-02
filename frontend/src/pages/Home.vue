@@ -7,6 +7,7 @@
       </v-flex>
     </v-layout>
   </v-container>
+  <v-subheader>Eventos más próximos</v-subheader>
   <v-container
     fluid
     grid-list-md
@@ -32,7 +33,7 @@
           </v-card-title>
 
           <v-card-actions>
-            <v-btn flat>Review</v-btn>
+            <v-btn :to="{name: 'event-detail', params: {'id': card.id}}" flat>Ver</v-btn>
             <v-spacer></v-spacer>
             <v-btn icon @click="show = !show">
               <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
@@ -48,6 +49,7 @@
       </v-flex>
     </v-layout>
   </v-container>
+  <v-subheader>Calendario de eventos</v-subheader>
   <v-container>
     <iframe src="https://calendar.google.com/calendar/embed?src=orestes.io_fj8ev1vakdnl8l8o6jeljhof1s%40group.calendar.google.com&ctz=Europe%2FMadrid" style="border: 0" width="100%" height="920" frameborder="0" scrolling="no"></iframe>
   </v-container>
