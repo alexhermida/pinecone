@@ -68,6 +68,17 @@ def test_prevent_create_event_without_description(admin_client):
 
 
 def test_prevent_create_event_without_group(admin_client):
+    start_date = make_aware(dt.datetime(2019, 1, 1, 10))
+    data = {'group': 'VigoTechGroup', 'description': 'descrición evento test',
+            'start': start_date}
+    response = admin_client.post('/api/events/', data)
+
+    assert response.status_code == 400
+    assert response.json()['non_field_errors'] == [
+        _('If you enter start date you must enter the end date')]
+
+
+def test_prevent_create_event_with_only_start_date(admin_client):
     data = {'description': 'descrición evento test'}
     response = admin_client.post('/api/events/', data)
 

@@ -1,7 +1,13 @@
-# Vigotech.org 
+[![Build Status](https://travis-ci.org/alexhermida/pinecone.svg?branch=master)](https://travis-ci.org/alexhermida/pinecone)
+
+# Vigotech.org
 
 ## Pinecone managament site
 
-[![Build Status](https://travis-ci.org/alexhermida/pinecone.svg?branch=master)](https://travis-ci.org/alexhermida/pinecone)
+Application for basic management of events inside medium size communities and groups. Its purpose is to help
+groups organizers to have a picture of future and past events within the community.
 
-*Bootstrapping..*
+* Allow events creation
+* Integration with google calendar
+* Integration with Twitter (WIP)
+* Integration with Telegram Bot (WIP)
