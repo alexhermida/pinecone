@@ -37,14 +37,13 @@
                 ></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-text-field
+                <v-textarea
                   v-model="event.description"
                   label="Descripción"
-                  multi-line
                   :rules="descriptionRules" class="textarea" required
                   @input="fieldErrors.description = []"
                   :error-messages="fieldErrors.description"
-                ></v-text-field>
+                ></v-textarea>
               </v-flex>
               <v-flex xs12>
                 <v-text-field

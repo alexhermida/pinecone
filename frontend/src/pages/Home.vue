@@ -19,11 +19,11 @@
         :key="card.id"
       >
         <v-card>
-          <v-card-media
+          <v-responsive
             :src=card.src
             height="100px"
           >
-          </v-card-media>
+          </v-responsive>
 
           <v-card-title primary-title>
             <div>
