@@ -2,7 +2,6 @@ from django.conf import settings
 
 import httplib2
 from googleapiclient.discovery import build
-from oauth2client.service_account import ServiceAccountCredentials
 from google.oauth2 import service_account
 
 
@@ -18,9 +17,6 @@ class GoogleCalendarService:
             settings.GOOGLE_CALENDAR_CREDENTIAL)
         scoped_credentials = creds.with_scopes(
             ['https://www.googleapis.com/auth/calendar'])
-        # creds = ServiceAccountCredentials.from_json_keyfile_name(
-        #     settings.GOOGLE_CALENDAR_CREDENTIALS,
-        #     scopes=['https://www.googleapis.com/auth/calendar'])
 
         self.service = build('calendar', 'v3',
                              http=scoped_credentials.authorize(httplib2.Http()))
