@@ -154,5 +154,5 @@ CORS_ORIGIN_ALLOW_ALL = True
 GOOGLE_CALENDAR_CREDENTIALS = os.path.join(PROJECT_DIR,
                                            os.environ.get(
                                                'CALENDAR_CREDENTIALS_FILE',
-                                               ''))
+                                               None))
 GOOGLE_CALENDAR_ID = os.environ.get('GOOGLE_CALENDAR_ID', None)
