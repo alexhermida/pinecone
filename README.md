@@ -11,3 +11,18 @@ groups organizers to have a picture of future and past events within the communi
 * Integration with google calendar
 * Integration with Twitter (WIP)
 * Integration with Telegram Bot (WIP)
+
+
+## Backend
+
+* Django w/ DRF
+* PostreSQL
+
+Environment variables needed:
+
+    `GOOGLE_APPLICATION_CREDENTIALS`
+    `GOOGLE_CALENDAR_ID`
+
+## Frontend
+
+* VueJS with Vuetify
