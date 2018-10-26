@@ -13,6 +13,7 @@ django-cors-headers = "*"
 google-api-python-client = "*"
 "psycopg2-binary" = "*"
 google-auth = "*"
+requests = "*"
 
 [dev-packages]
 factory_boy = "*"
