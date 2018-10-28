@@ -130,6 +130,7 @@ LOCALE_PATHS = (os.path.join(PROJECT_DIR, 'locale'),)
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(PROJECT_DIR, 'staticfiles')
+STATICFILES_DIRS = []
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -148,6 +149,8 @@ REST_FRAMEWORK = {
 # https://github.com/ottoyiu/django-cors-headers/#configuration
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+FILE_UPLOAD_PERMISSIONS = 0o644
 
 # Google Calendar configuration
 
