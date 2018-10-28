@@ -9,9 +9,9 @@ router = DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'events', views.EventViewSet)
 router.register(r'events-statuses', views.EventStatusViewSet,
-                base_name='statuses')
+                basename='statuses')
 router.register(r'events-closests', views.ClosetsEventViewSet,
-                base_name='closests-events')
+                basename='closests-events')
 
 urlpatterns = router.urls
 
