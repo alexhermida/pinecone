@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 Django = "*"
+django-debug-toolbar = "*"
 django-filter = "*"
 django-model-utils = "*"
 djangorestframework = "*"
