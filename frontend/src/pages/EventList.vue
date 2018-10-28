@@ -31,6 +31,7 @@ import formMixin from '@/mixins/formMixin'
 import mutationsMixin from '@/mixins/mutationsMixin'
 
 export default {
+  name: 'eventsList',
   components: {DataTable},
   pagination: {'sortBy': 'start', 'descending': false},
   mixins: [formMixin, mutationsMixin],

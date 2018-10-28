@@ -10,7 +10,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     menu: [
-      { icon: 'assignment', iconClass: 'red white--text', title: 'Eventos', subtitle: 'Listado', route: 'events-list' }
+      { icon: 'assignment', iconClass: 'red white--text', title: 'Eventos', subtitle: 'Listado', route: 'events-list' },
+      { icon: 'assignment', iconClass: 'red white--text', title: 'Calendario', subtitle: 'Calendario', route: 'calendar' }
     ],
     notify: {
       timeout: 5000,
