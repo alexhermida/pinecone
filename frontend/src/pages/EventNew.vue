@@ -61,31 +61,28 @@
                   :error-messages="fieldErrors.location"
                 ></v-text-field>
               </v-flex>
-              <v-flex xs12 sm6>
+              <v-flex xs12 sm4>
                 <date-picker
                     :date.sync="startDate"
                     label="Fecha comienzo"
                     @change="fieldErrors.start = []"
                     :error-messages="fieldErrors.start"/>
               </v-flex>
-              <v-flex xs12 sm6>
+              <v-flex xs12 sm4>
                 <time-picker
                   :time.sync="startTime"
                   @change="fieldErrors.start = []"
                   label="Hora comienzo"/>
               </v-flex>
-              <v-flex xs12 sm6>
-                <date-picker
-                  :date.sync="endDate"
-                  label="Fecha fin"
-                  @change="fieldErrors.end = []"
-                  :error-messages="fieldErrors.end"/>
-              </v-flex>
-              <v-flex xs12 sm6>
-                <time-picker
-                  :time.sync="endTime"
-                  @change="fieldErrors.end = []"
-                  label="Hora fin"/>
+              <v-flex xs12 sm4>
+                <v-text-field
+                  label="Duración"
+                  suffix="minutos"
+                  type="number"
+                  v-model="event.duration"
+                  @input="fieldErrors.duration = []"
+                  :error-messages="fieldErrors.duration"
+                  />
               </v-flex>
               <v-flex xs12>
                 <v-switch
@@ -140,9 +137,7 @@ export default {
         v => !!v || 'Descripción es obligatoria'
       ],
       startDate: null,
-      startTime: null,
-      endDate: null,
-      endTime: null
+      startTime: null
     }
   },
   watch: {
@@ -155,11 +150,6 @@ export default {
         this.startDate = startDateTime.date
         this.startTime = startDateTime.time
       }
-      const endDateTime = this.$options.filters.splitDateTime(this.event.end)
-      if (endDateTime) {
-        this.endDate = endDateTime.date
-        this.endTime = endDateTime.time
-      }
     },
     startDate () {
       this.event.startDate = this.startDate
@@ -167,14 +157,6 @@ export default {
     },
     startTime () {
       this.event.startTime = this.startTime
-      this.$emit('update:event', this.event)
-    },
-    endDate () {
-      this.event.endDate = this.endDate
-      this.$emit('update:event', this.event)
-    },
-    endTime () {
-      this.event.endTime = this.endTime
       this.$emit('update:event', this.event)
     }
   },
@@ -188,7 +170,7 @@ export default {
         link: this.event.link,
         location: this.event.location,
         start: this.$options.filters.joinDateTime(this.event.startDate, this.event.startTime),
-        end: this.$options.filters.joinDateTime(this.event.endDate, this.event.endTime),
+        duration: this.event.duration,
         google_calendar_published: this.event.google_calendar_published
       }
     },
