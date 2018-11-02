@@ -14,6 +14,6 @@ class EventFactory(factory.django.DjangoModelFactory):
     group = factory.Faker('text')
     link = factory.Faker('text')
     location = factory.Faker('text')
-    status = factory.Faker('text')
+    status = factory.Faker('random_element', elements=models.Event.STATUS)
     start = factory.LazyFunction(timezone.now)
     end = factory.LazyAttribute(lambda o: o.start + dt.timedelta(hours=1))

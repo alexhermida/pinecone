@@ -49,7 +49,7 @@ def test_get_events_descendent_order(admin_client):
 
     assert response.status_code == 200
     assert len(response.json()) == 10
-    assert response.json()[0]['id'] == 10
+    assert response.json()[0]['id'] == 21
 
 
 def test_create_event_with_required_fields(admin_client):
