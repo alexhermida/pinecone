@@ -34,7 +34,6 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
     link = serializers.CharField(required=False, allow_blank=True)
     location = serializers.CharField(required=False, allow_blank=True)
     start = serializers.DateTimeField(required=False)
-    end = serializers.DateTimeField(required=False)
     google_calendar_published = serializers.BooleanField(required=False)
 
     user = serializers.HyperlinkedRelatedField(
@@ -45,7 +44,7 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Event
         fields = ('id', 'url', 'title', 'description', 'group', 'link',
-                  'location', 'start', 'end', 'status', 'user', 'created',
+                  'location', 'start', 'duration', 'status', 'user', 'created',
                   'modified', 'google_calendar_published', 'google_event_id',
                   'google_event_htmllink')
         read_only_fields = ('google_event_htmllink',)
@@ -55,7 +54,6 @@ class EventCreateSerializer(serializers.ModelSerializer):
     link = serializers.CharField(required=False, allow_blank=True)
     location = serializers.CharField(required=False, allow_blank=True)
     start = serializers.DateTimeField(required=False)
-    end = serializers.DateTimeField(required=False)
     google_calendar_published = serializers.BooleanField(required=False)
 
     user = serializers.HyperlinkedRelatedField(
@@ -66,20 +64,24 @@ class EventCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Event
         fields = ('id', 'url', 'title', 'description', 'group', 'link',
-                  'location', 'start', 'end', 'status', 'user', 'created',
+                  'location', 'start', 'duration', 'status', 'user', 'created',
                   'modified', 'google_calendar_published', 'google_event_id')
 
         read_only_fields = 'created', 'modified', 'google_event_id'
 
     def save(self):
-        event_id = None
-        html_link = None
+        user = self.context.get("request").user \
+            if 'request' in self.context else None
+        self.validated_data['user'] = user
+
         if self.validated_data.get('google_calendar_published'):
             event_id, html_link = self.create_google_calendar_event()
-        user = self.context.get("request").user
+            if event_id:
+                self.validated_data['google_event_id'] = event_id
+                self.validated_data['google_event_htmllink'] = html_link
+                self.validated_data['status'] = 'published'
 
-        return super().save(user=user, google_event_id=event_id,
-                            google_event_htmllink=html_link)
+        return super().save()
 
     def create_google_calendar_event(self):
         """
