@@ -83,7 +83,7 @@ def test_prevent_create_event_with_only_start_date(admin_client):
 
     assert response.status_code == 400
     assert response.json()['non_field_errors'] == [
-        _('If you enter start date you must enter the end date')]
+        _('If you enter start date you must enter the duration')]
 
 
 def test_prevent_publish_gcal_event_without_dates(admin_client):
@@ -94,8 +94,8 @@ def test_prevent_publish_gcal_event_without_dates(admin_client):
 
     assert response.status_code == 400
     assert response.json()['non_field_errors'] == [
-        _('To publish in Google Calendar you must enter start/end '
-          'datetime and update the status')]
+        _('To publish in Google Calendar you must enter start '
+          'time and duration')]
 
 
 def test_prevent_publish_gcal_event_without_start_date(admin_client):
@@ -106,11 +106,11 @@ def test_prevent_publish_gcal_event_without_start_date(admin_client):
 
     assert response.status_code == 400
     assert response.json()['non_field_errors'] == [
-        _('To publish in Google Calendar you must enter start/end '
-          'datetime and update the status')]
+        _('To publish in Google Calendar you must enter start '
+          'time and duration')]
 
 
-def test_prevent_publish_gcal_event_without_end_date(admin_client):
+def test_prevent_publish_gcal_event_without_duration(admin_client):
     data = {'description': 'descrición evento test',
             'group': 'VigoTechGroup', 'end': dt.datetime.now(),
             'google_calendar_published': True}
@@ -118,5 +118,5 @@ def test_prevent_publish_gcal_event_without_end_date(admin_client):
 
     assert response.status_code == 400
     assert response.json()['non_field_errors'] == [
-        _('To publish in Google Calendar you must enter start/end '
-          'datetime and update the status')]
+        _('To publish in Google Calendar you must enter start '
+          'time and duration')]
