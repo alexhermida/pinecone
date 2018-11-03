@@ -1,4 +1,5 @@
 import datetime as dt
+from unittest.mock import patch
 
 import pytest
 
@@ -58,6 +59,28 @@ def test_create_event_with_required_fields(admin_client):
     response = admin_client.post('/api/events/', data)
 
     assert response.status_code == 201
+
+
+def test_create_draft_event(admin_client):
+    data = {'description': 'descrición evento test',
+            'group': 'VigoTechGroup'}
+    response = admin_client.post('/api/events/', data)
+
+    assert response.status_code == 201
+    assert response.json()['status'] == 'draft'
+
+
+@patch('api.serializers.EventCreateSerializer.create_google_calendar_event',
+       lambda x: (101, 'http://test.local'))
+def test_create_published_event(admin_client):
+    start_date = make_aware(dt.datetime(2030, 1, 1, 10))
+    data = {'description': 'descrición evento test',
+            'group': 'VigoTechGroup', 'start': start_date,
+            'duration': 2, 'google_calendar_published': True}
+    response = admin_client.post('/api/events/', data)
+
+    assert response.status_code == 201
+    assert response.json()['status'] == 'published'
 
 
 def test_prevent_create_event_without_description(admin_client):
