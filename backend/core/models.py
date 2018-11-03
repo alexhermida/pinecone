@@ -19,6 +19,7 @@ class Event(TimeStampedModel):
 
     start = models.DateTimeField(_('start'), null=True, blank=True)
     end = models.DateTimeField(_('end'), null=True, blank=True)
+    duration = models.IntegerField(_('duration'), null=True, blank=True)
 
     user = models.ForeignKey(User, null=True, verbose_name=_('user'),
                              on_delete=models.PROTECT)
