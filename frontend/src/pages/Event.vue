@@ -125,6 +125,7 @@ import formMixin from '@/mixins/formMixin'
 import mutationsMixin from '@/mixins/mutationsMixin'
 
 export default {
+  name: 'eventDetail',
   props: ['errors'],
   mixins: [formMixin, mutationsMixin],
   mounted () {
@@ -207,7 +208,9 @@ export default {
       }
     },
     onSubmit () {
-      return api.editEvent(this.event.id, this.submitData())
+      return api.editEvent(this.event.id, this.submitData()).then(response => {
+        this.event = response
+      })
     },
     onSuccess () {
       this.success('Evento actualizada con éxito')
@@ -216,10 +219,6 @@ export default {
       if (this.nonFieldErrors) {
         this.error(this.nonFieldErrors.join(' '))
       }
-    },
-    disableCalendarBtn () {
-      this.disableCalendarButton = !this.event.google_event_htmllink
-      return this.disableCalendarButton
     }
   }
 }

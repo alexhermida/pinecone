@@ -116,6 +116,7 @@ import formMixin from '@/mixins/formMixin'
 import mutationsMixin from '@/mixins/mutationsMixin'
 
 export default {
+  name: 'eventNew',
   props: ['isValid', 'showCancel', 'title', 'actionName'],
   mixins: [formMixin, mutationsMixin],
   mounted () {
