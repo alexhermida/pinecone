@@ -70,6 +70,36 @@ def test_create_draft_event(admin_client):
     assert response.json()['status'] == 'draft'
 
 
+def test_update_draft_event(admin_client):
+    event = factories.EventFactory(description='My test event')
+    data = {'description': 'new description'}
+    response = admin_client.patch(f'/api/events/{event.id}/', data,
+                                  content_type='application/json')
+    assert response.status_code == 200
+    assert response.json()['description'] == 'new description'
+
+
+@patch('api.serializers.EventCreateSerializer.create_google_calendar_event',
+       lambda x: (101, 'http://test.local'))
+def test_update_published_event(admin_client):
+    start_date = make_aware(dt.datetime(2030, 1, 1, 10))
+    event = factories.EventFactory(description='Event to publish',
+                                   status='draft')
+    assert event.status == 'draft'
+
+    data = {'start': start_date,
+            'duration': 2, 'google_calendar_published': True}
+    response = admin_client.patch(f'/api/events/{event.id}/', data,
+                                  content_type='application/json')
+    assert response.status_code == 200
+    assert response.json()['google_calendar_published'] is True
+    assert response.json()['status'] == 'published'
+
+    response = admin_client.get(f'/api/events/{event.id}/')
+    assert response.json()['status'] == 'published'
+    assert response.json()['google_event_id'] == '101'
+
+
 @patch('api.serializers.EventCreateSerializer.create_google_calendar_event',
        lambda x: (101, 'http://test.local'))
 def test_create_published_event(admin_client):

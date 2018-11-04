@@ -67,7 +67,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
                   'location', 'start', 'duration', 'status', 'user', 'created',
                   'modified', 'google_calendar_published', 'google_event_id')
 
-        read_only_fields = 'created', 'modified', 'google_event_id'
+        read_only_fields = 'created', 'modified', 'google_event_id', 'status'
 
     def save(self):
         user = self.context.get("request").user \
