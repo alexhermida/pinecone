@@ -65,7 +65,8 @@ class EventCreateSerializer(serializers.ModelSerializer):
         model = models.Event
         fields = ('id', 'url', 'title', 'description', 'group', 'link',
                   'location', 'start', 'duration', 'status', 'user', 'created',
-                  'modified', 'google_calendar_published', 'google_event_id')
+                  'modified', 'google_calendar_published', 'google_event_id',
+                  'google_event_htmllink')
 
         read_only_fields = 'created', 'modified', 'google_event_id', 'status'
 
@@ -80,7 +81,12 @@ class EventCreateSerializer(serializers.ModelSerializer):
                 self.validated_data['google_event_id'] = event_id
                 self.validated_data['google_event_htmllink'] = html_link
                 self.validated_data['status'] = 'published'
-
+        else:
+            if self.instance.google_event_id and \
+                    self.remove_google_calendar_event():
+                    self.validated_data['google_event_id'] = None
+                    self.validated_data['google_event_htmllink'] = None
+                    self.validated_data['status'] = 'draft'
         return super().save()
 
     def create_google_calendar_event(self):
@@ -116,6 +122,19 @@ class EventCreateSerializer(serializers.ModelSerializer):
         event_htmllink = created_event.get('htmlLink')
 
         return event_id, event_htmllink
+
+    def remove_google_calendar_event(self, event_id):
+        """
+                Delete event in Google Calendar
+                """
+        # TODO Refactor to celery
+        gcalendar = services.GoogleCalendarService()
+        gcalendar.initialize()
+
+
+        deleted_event = gcalendar.delete_event(event_id)
+        print('deleted_event', deleted_event)
+        return True
 
     def validate(self, data):
         """

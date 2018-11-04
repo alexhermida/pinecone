@@ -111,6 +111,34 @@ def test_create_published_event(admin_client):
 
     assert response.status_code == 201
     assert response.json()['status'] == 'published'
+    assert response.json()['google_event_id'] == '101'
+
+
+@patch('api.serializers.EventCreateSerializer.remove_google_calendar_event',
+       lambda x: True)
+def test_remove_published_event(admin_client):
+    start_date = make_aware(dt.datetime(2030, 1, 1, 10))
+    data = {'description': 'descrición evento test',
+            'group': 'VigoTechGroup', 'start': start_date,
+            'duration': 2, 'google_calendar_published': True,
+            'google_event_id': 102,
+            'google_event_htmllink': 'http://test.local',
+            'status': 'published'}
+    event = factories.EventFactory(**data)
+
+    response = admin_client.get(f'/api/events/{event.id}/')
+    assert response.json()['status'] == 'published'
+    assert response.json()['google_calendar_published'] is True
+
+    data = {'google_calendar_published': False}
+    response = admin_client.patch(f'/api/events/{event.id}/', data,
+                                  content_type='application/json')
+
+    assert response.status_code == 200
+    assert response.json()['google_calendar_published'] is False
+    assert response.json()['status'] == 'draft'
+    assert response.json()['google_event_id'] is None
+    assert response.json()['google_event_htmllink'] is None
 
 
 def test_prevent_create_event_without_description(admin_client):
