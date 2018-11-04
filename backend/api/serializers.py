@@ -47,7 +47,7 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
                   'location', 'start', 'duration', 'status', 'user', 'created',
                   'modified', 'google_calendar_published', 'google_event_id',
                   'google_event_htmllink')
-        read_only_fields = ('google_event_htmllink',)
+        read_only_fields = ('google_event_id', 'google_event_htmllink',)
 
 
 class EventCreateSerializer(serializers.ModelSerializer):
@@ -68,28 +68,46 @@ class EventCreateSerializer(serializers.ModelSerializer):
                   'modified', 'google_calendar_published', 'google_event_id',
                   'google_event_htmllink')
 
-        read_only_fields = 'created', 'modified', 'google_event_id', 'status'
+        read_only_fields = 'created', 'modified', 'google_event_id', \
+                           'google_event_htmllink', 'status'
+
+    def create(self, validated_data):
+        if validated_data.get('google_calendar_published') is True:
+            event_id, html_link = self.create_google_calendar_event(
+                validated_data)
+            if event_id:
+                validated_data['google_event_id'] = event_id
+                validated_data['google_event_htmllink'] = html_link
+                validated_data['status'] = 'published'
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        if validated_data.get('google_calendar_published') is True and \
+                not instance.google_event_id:
+            event_id, html_link = self.create_google_calendar_event(
+                validated_data)
+
+            if event_id:
+                instance.google_event_id = event_id
+                instance.google_event_htmllink = html_link
+                instance.status = 'published'
+        elif validated_data.get('google_calendar_published') is False and\
+                instance.google_event_id:
+            if self.remove_google_calendar_event(
+                        instance.google_event_id):
+                instance.google_event_id = None
+                instance.google_event_htmllink = None
+                instance.status = 'draft'
+        return super().update(instance, validated_data)
 
     def save(self):
         user = self.context.get("request").user \
             if 'request' in self.context else None
         self.validated_data['user'] = user
 
-        if self.validated_data.get('google_calendar_published'):
-            event_id, html_link = self.create_google_calendar_event()
-            if event_id:
-                self.validated_data['google_event_id'] = event_id
-                self.validated_data['google_event_htmllink'] = html_link
-                self.validated_data['status'] = 'published'
-        else:
-            if self.instance.google_event_id and \
-                    self.remove_google_calendar_event():
-                    self.validated_data['google_event_id'] = None
-                    self.validated_data['google_event_htmllink'] = None
-                    self.validated_data['status'] = 'draft'
         return super().save()
 
-    def create_google_calendar_event(self):
+    def create_google_calendar_event(self, data):
         """
         Create event in Google Calendar
         """
@@ -97,23 +115,16 @@ class EventCreateSerializer(serializers.ModelSerializer):
         gcalendar = services.GoogleCalendarService()
         gcalendar.initialize()
 
-        group = self.validated_data.get('group')
-        title = self.validated_data.get('title')
-        summary = f'{group} - {title}'
-        description = self.validated_data.get('description')
-        location = self.validated_data.get('location')
-        startime = self.validated_data.get('start').isoformat()
-        endtime = self.validated_data.get('end').isoformat()
 
         event = {
-            'summary': summary,
-            'location': location,
-            'description': description,
+            'summary': f'{data.get("group")} - {data.get("title")}',
+            'location': data.get('location'),
+            'description': data.get('description'),
             'start': {
-                'dateTime': startime,
+                'dateTime': data.get('start').isoformat(),
             },
             'end': {
-                'dateTime': endtime,
+                'dateTime': data.get('end').isoformat(),
             },
         }
 
