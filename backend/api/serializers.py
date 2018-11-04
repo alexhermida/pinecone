@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 
@@ -115,7 +117,6 @@ class EventCreateSerializer(serializers.ModelSerializer):
         gcalendar = services.GoogleCalendarService()
         gcalendar.initialize()
 
-
         event = {
             'summary': f'{data.get("group")} - {data.get("title")}',
             'location': data.get('location'),
@@ -136,12 +137,11 @@ class EventCreateSerializer(serializers.ModelSerializer):
 
     def remove_google_calendar_event(self, event_id):
         """
-                Delete event in Google Calendar
-                """
+        Delete event in Google Calendar
+        """
         # TODO Refactor to celery
         gcalendar = services.GoogleCalendarService()
         gcalendar.initialize()
-
 
         deleted_event = gcalendar.delete_event(event_id)
         print('deleted_event', deleted_event)
@@ -165,5 +165,6 @@ class EventCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 _('To publish in Google Calendar you must enter start '
                   'time and duration'))
+        data['end'] = data.get('start') + timedelta(minutes=duration)
 
         return data

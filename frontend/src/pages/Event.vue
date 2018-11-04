@@ -19,18 +19,11 @@
                 ></v-text-field>
               </v-flex>
               <v-flex xs6 sm4>
-                <v-select
-                  :items="masters.statuses"
+                <v-text-field
                   v-model="event.status"
-                  :loading="loading"
-                  :cache-items="true"
                   label="Estado"
-                  item-value="id"
-                  item-text="name"
-                  @change="fieldErrors.status = []"
-                  :error-messages="fieldErrors.status"
-                  required
-                ></v-select>
+                  disabled
+                ></v-text-field>
               </v-flex>
               <v-flex xs12>
                 <v-text-field
@@ -106,7 +99,7 @@
                 ></v-switch>
               </v-flex>
               <v-flex xs12 sm6>
-                <v-btn :disabled="disableCalendarBtn()" round color="primary" :href="event.google_event_htmllink" target="_blank">Abrir no calendario</v-btn>
+                <v-btn :disabled="!event.google_event_htmllink" round color="primary" :href="event.google_event_htmllink" target="_blank">Abrir no calendario</v-btn>
               </v-flex>
           </v-layout>
         </v-form>
