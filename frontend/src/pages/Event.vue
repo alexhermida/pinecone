@@ -202,7 +202,7 @@ export default {
         description: this.event.description,
         link: this.event.link,
         location: this.event.location,
-        start: this.$options.filters.joinDateTime(this.event.startDate, this.event.startTime),
+        start: this.$options.filters.joinDateTime(this.startDate, this.startTime),
         duration: this.event.duration,
         google_calendar_published: this.event.google_calendar_published
       }
