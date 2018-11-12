@@ -88,11 +88,14 @@ class EventCreateSerializer(serializers.ModelSerializer):
                 not instance.google_event_id:
             event_id, html_link = self.create_google_calendar_event(
                 validated_data)
-
             if event_id:
                 instance.google_event_id = event_id
                 instance.google_event_htmllink = html_link
                 instance.status = 'published'
+        elif validated_data.get('google_calendar_published') is True and \
+                instance.google_event_id:
+            self.update_google_calendar_event(instance.google_event_id,
+                                              validated_data)
         elif validated_data.get('google_calendar_published') is False and\
                 instance.google_event_id:
             if self.remove_google_calendar_event(
@@ -135,6 +138,32 @@ class EventCreateSerializer(serializers.ModelSerializer):
         created_event = gcalendar.create_event(event)
         event_id = created_event.get('id')
         event_htmllink = created_event.get('htmlLink')
+
+        return event_id, event_htmllink
+
+    def update_google_calendar_event(self, event_id, data):
+        """
+        Update event in Google Calendar
+        """
+        # TODO Refactor to celery
+        gcalendar = services.GoogleCalendarService()
+        gcalendar.initialize()
+
+        event = {
+            'summary': f'{data.get("group")} - {data.get("title")}',
+            'location': data.get('location'),
+            'description': data.get('description'),
+            'start': {
+                'dateTime': data.get('start').isoformat(),
+            },
+            'end': {
+                'dateTime': data.get('end').isoformat(),
+            },
+        }
+
+        updated_event = gcalendar.update_event(event_id, event)
+        event_id = updated_event.get('id')
+        event_htmllink = updated_event.get('htmlLink')
 
         return event_id, event_htmllink
 

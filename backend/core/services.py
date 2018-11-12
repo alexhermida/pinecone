@@ -30,6 +30,11 @@ class GoogleCalendarService:
             calendarId=self.calendarId,
             body=event_data).execute()
 
+    def update_event(self, event_id, event_data):
+        return self.service.events().update(
+            calendarId=self.calendarId, eventId=event_id,
+            body=event_data).execute()
+
     def delete_event(self, event_id):
         return self.service.events().delete(
             calendarId=settings.GOOGLE_CALENDAR_ID,

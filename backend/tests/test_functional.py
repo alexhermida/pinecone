@@ -81,7 +81,7 @@ def test_update_draft_event(admin_client):
 
 @patch('api.serializers.EventCreateSerializer.create_google_calendar_event',
        lambda x, y: (101, 'http://test.local'))
-def test_update_published_event(admin_client):
+def test_publish_created_event(admin_client):
     start_date = make_aware(dt.datetime(2030, 1, 1, 10))
     event = factories.EventFactory(description='Event to publish',
                                    status='draft')
