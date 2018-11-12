@@ -1,7 +1,12 @@
 from django.conf import settings
 
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
+
+
+class GoogleCalendarError(HttpError):
+    pass
 
 
 class GoogleCalendarService:

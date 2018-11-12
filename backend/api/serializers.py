@@ -100,6 +100,9 @@ class EventCreateSerializer(serializers.ModelSerializer):
                 instance.google_event_id = None
                 instance.google_event_htmllink = None
                 instance.status = 'draft'
+            else:
+                raise serializers.ValidationError(
+                    _('There was an error removing from calendar'))
         return super().update(instance, validated_data)
 
     def save(self):
@@ -143,8 +146,10 @@ class EventCreateSerializer(serializers.ModelSerializer):
         gcalendar = services.GoogleCalendarService()
         gcalendar.initialize()
 
-        deleted_event = gcalendar.delete_event(event_id)
-        print('deleted_event', deleted_event)
+        try:
+            gcalendar.delete_event(event_id)
+        except services.GoogleCalendarError:
+            return False
         return True
 
     def validate(self, data):
