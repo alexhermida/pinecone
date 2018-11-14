@@ -165,7 +165,8 @@ def test_update_published_event(admin_client):
 
     assert response.status_code == 200
     assert response.json()['google_calendar_published'] is True
-    assert response.json()['start'] == new_start_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+    assert response.json()['start'] == \
+           new_start_date.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 
 def test_prevent_create_event_without_description(admin_client):
