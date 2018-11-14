@@ -10,15 +10,20 @@ class GoogleCalendarError(HttpError):
 
 
 class GoogleCalendarService:
-    def __init__(self):
+    def __init__(self, calendar_id=None, calendar_credentials=None):
+        if not calendar_id:
+            calendar_id = settings.GOOGLE_CALENDAR_ID
+        if not calendar_credentials:
+            calendar_credentials = settings.GOOGLE_CALENDAR_CREDENTIALS
         self.service = None
-        self.calendarId = settings.GOOGLE_CALENDAR_ID
+        self.calendarId = calendar_id
+        self.calendarCredentials = calendar_credentials
 
         self.initialize()
 
     def initialize(self):
         creds = service_account.Credentials.from_service_account_file(
-            settings.GOOGLE_CALENDAR_CREDENTIALS)
+            self.calendarCredentials)
         scoped_credentials = creds.with_scopes(
             ['https://www.googleapis.com/auth/calendar'])
 
