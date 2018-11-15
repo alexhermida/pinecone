@@ -19,18 +19,11 @@
                 ></v-text-field>
               </v-flex>
               <v-flex xs6 sm4>
-                <v-select
-                  :items="masters.statuses"
+                <v-text-field
                   v-model="event.status"
-                  :loading="loading"
-                  :cache-items="true"
                   label="Estado"
-                  item-value="id"
-                  item-text="name"
-                  @change="fieldErrors.status = []"
-                  :error-messages="fieldErrors.status"
-                  required
-                ></v-select>
+                  disabled
+                ></v-text-field>
               </v-flex>
               <v-flex xs12>
                 <v-text-field
@@ -42,14 +35,13 @@
                 ></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-text-field
+                <v-textarea
                   v-model="event.description"
                   label="Descripción"
-                  multi-line
                   :rules="descriptionRules" class="textarea" required
                   @input="fieldErrors.description = []"
                   :error-messages="fieldErrors.description"
-                ></v-text-field>
+                ></v-textarea>
               </v-flex>
               <v-flex xs6 sm4>
                 <v-text-field
@@ -76,30 +68,27 @@
                   :error-messages="fieldErrors.location"
                 ></v-text-field>
               </v-flex>
-              <v-flex xs12 sm6>
+              <v-flex xs12 sm4>
                 <date-picker
                     :date.sync="startDate"
                     label="Fecha comienzo"
                     @change="fieldErrors.start = []"/>
               </v-flex>
-              <v-flex xs12 sm6>
+              <v-flex xs12 sm4>
                 <time-picker
                   :time.sync="startTime"
                   @change="fieldErrors.start = []"
                   label="Hora comienzo"/>
               </v-flex>
-              <v-flex xs12 sm6>
-                <date-picker
-                  :date.sync="endDate"
-                  label="Fecha fin"
-                  @change="fieldErrors.end = []"
-                  :error-messages="fieldErrors.end"/>
-              </v-flex>
-              <v-flex xs12 sm6>
-                <time-picker
-                  :time.sync="endTime"
-                  @change="fieldErrors.end = []"
-                  label="Hora fin"/>
+              <v-flex xs12 sm4>
+                <v-text-field
+                  label="Duración"
+                  suffix="minutos"
+                  type="number"
+                  v-model="event.duration"
+                  @input="fieldErrors.duration = []"
+                  :error-messages="fieldErrors.duration"
+                  />
               </v-flex>
               <v-flex xs12 sm6>
                 <v-switch
@@ -110,7 +99,7 @@
                 ></v-switch>
               </v-flex>
               <v-flex xs12 sm6>
-                <v-btn :disabled="disableCalendarBtn()" round color="primary" :href="event.google_event_htmllink" target="_blank">Abrir no calendario</v-btn>
+                <v-btn :disabled="!event.google_event_htmllink" round color="primary" :href="event.google_event_htmllink" target="_blank">Abrir no calendario</v-btn>
               </v-flex>
           </v-layout>
         </v-form>
@@ -136,6 +125,7 @@ import formMixin from '@/mixins/formMixin'
 import mutationsMixin from '@/mixins/mutationsMixin'
 
 export default {
+  name: 'eventDetail',
   props: ['errors'],
   mixins: [formMixin, mutationsMixin],
   mounted () {
@@ -180,8 +170,6 @@ export default {
       },
       startDate: null,
       startTime: null,
-      endDate: null,
-      endTime: null,
       disableCalendarButton: true
     }
   },
@@ -195,11 +183,6 @@ export default {
         this.startDate = startDateTime.date
         this.startTime = startDateTime.time
       }
-      const endDateTime = this.$options.filters.splitDateTime(this.event.end)
-      if (endDateTime) {
-        this.endDate = endDateTime.date
-        this.endTime = endDateTime.time
-      }
     },
     startDate () {
       this.event.startDate = this.startDate
@@ -207,14 +190,6 @@ export default {
     },
     startTime () {
       this.event.startTime = this.startTime
-      this.$emit('update:event', this.event)
-    },
-    endDate () {
-      this.event.endDate = this.endDate
-      this.$emit('update:event', this.event)
-    },
-    endTime () {
-      this.event.endTime = this.endTime
       this.$emit('update:event', this.event)
     }
   },
@@ -227,13 +202,15 @@ export default {
         description: this.event.description,
         link: this.event.link,
         location: this.event.location,
-        start: this.$options.filters.joinDateTime(this.event.startDate, this.event.startTime),
-        end: this.$options.filters.joinDateTime(this.event.endDate, this.event.endTime),
+        start: this.$options.filters.joinDateTime(this.startDate, this.startTime),
+        duration: this.event.duration,
         google_calendar_published: this.event.google_calendar_published
       }
     },
     onSubmit () {
-      return api.editEvent(this.event.id, this.submitData())
+      return api.editEvent(this.event.id, this.submitData()).then(response => {
+        this.event = response
+      })
     },
     onSuccess () {
       this.success('Evento actualizada con éxito')
@@ -242,10 +219,6 @@ export default {
       if (this.nonFieldErrors) {
         this.error(this.nonFieldErrors.join(' '))
       }
-    },
-    disableCalendarBtn () {
-      this.disableCalendarButton = !this.event.google_event_htmllink
-      return this.disableCalendarButton
     }
   }
 }

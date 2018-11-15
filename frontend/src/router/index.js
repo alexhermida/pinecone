@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import Home from '@/pages/Home'
+import Calendar from '@/pages/Calendar'
 import Event from '@/pages/Event'
 import EventNew from '@/pages/EventNew'
 import EventList from '@/pages/EventList'
@@ -34,6 +35,12 @@ const router = new Router({
       name: 'event-detail',
       component: Event,
       meta: { title: route => { return 'Evento' + route.params.id } }
+    },
+    {
+      path: '/calendar/',
+      name: 'calendar',
+      component: Calendar,
+      meta: { title: route => { return 'Calendar' } }
     },
     {
       path: '/login',

@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 
@@ -34,7 +36,6 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
     link = serializers.CharField(required=False, allow_blank=True)
     location = serializers.CharField(required=False, allow_blank=True)
     start = serializers.DateTimeField(required=False)
-    end = serializers.DateTimeField(required=False)
     google_calendar_published = serializers.BooleanField(required=False)
 
     user = serializers.HyperlinkedRelatedField(
@@ -45,17 +46,16 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Event
         fields = ('id', 'url', 'title', 'description', 'group', 'link',
-                  'location', 'start', 'end', 'status', 'user', 'created',
-                  'modified', 'google_calendar_published', 'google_event_id',
-                  'google_event_htmllink')
-        read_only_fields = ('google_event_htmllink',)
+                  'location', 'start', 'end', 'duration', 'status', 'user',
+                  'created', 'modified', 'google_calendar_published',
+                  'google_event_id', 'google_event_htmllink')
+        read_only_fields = ('google_event_id', 'google_event_htmllink',)
 
 
 class EventCreateSerializer(serializers.ModelSerializer):
     link = serializers.CharField(required=False, allow_blank=True)
     location = serializers.CharField(required=False, allow_blank=True)
     start = serializers.DateTimeField(required=False)
-    end = serializers.DateTimeField(required=False)
     google_calendar_published = serializers.BooleanField(required=False)
 
     user = serializers.HyperlinkedRelatedField(
@@ -66,22 +66,56 @@ class EventCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Event
         fields = ('id', 'url', 'title', 'description', 'group', 'link',
-                  'location', 'start', 'end', 'status', 'user', 'created',
-                  'modified', 'google_calendar_published', 'google_event_id')
+                  'location', 'start', 'duration', 'status', 'user', 'created',
+                  'modified', 'google_calendar_published', 'google_event_id',
+                  'google_event_htmllink')
 
-        read_only_fields = 'created', 'modified', 'google_event_id'
+        read_only_fields = 'created', 'modified', 'google_event_id', \
+                           'google_event_htmllink', 'status'
+
+    def create(self, validated_data):
+        if validated_data.get('google_calendar_published') is True:
+            event_id, html_link = self.create_google_calendar_event(
+                validated_data)
+            if event_id:
+                validated_data['google_event_id'] = event_id
+                validated_data['google_event_htmllink'] = html_link
+                validated_data['status'] = 'published'
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        if validated_data.get('google_calendar_published') is True and \
+                not instance.google_event_id:
+            event_id, html_link = self.create_google_calendar_event(
+                validated_data)
+            if event_id:
+                instance.google_event_id = event_id
+                instance.google_event_htmllink = html_link
+                instance.status = 'published'
+        elif validated_data.get('google_calendar_published') is True and \
+                instance.google_event_id:
+            self.update_google_calendar_event(instance.google_event_id,
+                                              validated_data)
+        elif validated_data.get('google_calendar_published') is False and\
+                instance.google_event_id:
+            if self.remove_google_calendar_event(
+                        instance.google_event_id):
+                instance.google_event_id = None
+                instance.google_event_htmllink = None
+                instance.status = 'draft'
+            else:
+                raise serializers.ValidationError(
+                    _('There was an error removing from calendar'))
+        return super().update(instance, validated_data)
 
     def save(self):
-        event_id = None
-        html_link = None
-        if self.validated_data.get('google_calendar_published'):
-            event_id, html_link = self.create_google_calendar_event()
-        user = self.context.get("request").user
+        user = self.context.get("request").user \
+            if 'request' in self.context else None
+        self.validated_data['user'] = user
 
-        return super().save(user=user, google_event_id=event_id,
-                            google_event_htmllink=html_link)
+        return super().save()
 
-    def create_google_calendar_event(self):
+    def create_google_calendar_event(self, data):
         """
         Create event in Google Calendar
         """
@@ -89,23 +123,15 @@ class EventCreateSerializer(serializers.ModelSerializer):
         gcalendar = services.GoogleCalendarService()
         gcalendar.initialize()
 
-        group = self.validated_data.get('group')
-        title = self.validated_data.get('title')
-        summary = f'{group} - {title}'
-        description = self.validated_data.get('description')
-        location = self.validated_data.get('location')
-        startime = self.validated_data.get('start').isoformat()
-        endtime = self.validated_data.get('end').isoformat()
-
         event = {
-            'summary': summary,
-            'location': location,
-            'description': description,
+            'summary': f'{data.get("group")} - {data.get("title")}',
+            'location': data.get('location'),
+            'description': data.get('description'),
             'start': {
-                'dateTime': startime,
+                'dateTime': data.get('start').isoformat(),
             },
             'end': {
-                'dateTime': endtime,
+                'dateTime': data.get('end').isoformat(),
             },
         }
 
@@ -115,29 +141,64 @@ class EventCreateSerializer(serializers.ModelSerializer):
 
         return event_id, event_htmllink
 
+    def update_google_calendar_event(self, event_id, data):
+        """
+        Update event in Google Calendar
+        """
+        # TODO Refactor to celery
+        gcalendar = services.GoogleCalendarService()
+        gcalendar.initialize()
+
+        event = {
+            'summary': f'{data.get("group")} - {data.get("title")}',
+            'location': data.get('location'),
+            'description': data.get('description'),
+            'start': {
+                'dateTime': data.get('start').isoformat(),
+            },
+            'end': {
+                'dateTime': data.get('end').isoformat(),
+            },
+        }
+
+        updated_event = gcalendar.update_event(event_id, event)
+        event_id = updated_event.get('id')
+        event_htmllink = updated_event.get('htmlLink')
+
+        return event_id, event_htmllink
+
+    def remove_google_calendar_event(self, event_id):
+        """
+        Delete event in Google Calendar
+        """
+        # TODO Refactor to celery
+        gcalendar = services.GoogleCalendarService()
+        gcalendar.initialize()
+
+        try:
+            gcalendar.delete_event(event_id)
+        except services.GoogleCalendarError:
+            return False
+        return True
+
     def validate(self, data):
         """
         Check if there are start&end datetimes to publish in Google Calendar.
         """
         start = data.get('start')
-        end = data.get('end')
-        status = data.get('status')
+        duration = data.get('duration')
 
-        if start and not end:
+        if start and not duration:
             raise serializers.ValidationError(
-                _('If you enter start date you must enter the end date'))
-
-        if start and end and start > end:
-            raise serializers.ValidationError(
-                _('You must enter the start date and time before the '
-                  'event end'))
+                _('If you enter start date you must enter the duration'))
 
         if not data.get('google_calendar_published'):
             return data
 
-        if status != 'published' or not start or not end:
+        if not start or not duration:
             raise serializers.ValidationError(
-                _('To publish in Google Calendar you must enter start/end '
-                  'datetime and update the status'))
+                _('To publish in Google Calendar you must enter start '
+                  'time and duration'))
+        data['end'] = data.get('start') + timedelta(minutes=duration)
 
         return data

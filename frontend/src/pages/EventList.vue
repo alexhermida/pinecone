@@ -15,7 +15,7 @@
       <td>{{ row.item.status }}</td>
       <td>{{ row.item.google_calendar_published ? "Si" : "No" }}</td>
       <td>{{ row.item.start|format-date-time }}</td>
-      <td>{{ row.item.start|format-date-time }}</td>
+      <td>{{ row.item.end|format-date-time }}</td>
       <td>{{ row.item.created|format-date-time }}</td>
       <td>{{ row.item.modified|format-date-time }}</td>
     </template>
@@ -31,6 +31,7 @@ import formMixin from '@/mixins/formMixin'
 import mutationsMixin from '@/mixins/mutationsMixin'
 
 export default {
+  name: 'eventsList',
   components: {DataTable},
   pagination: {'sortBy': 'start', 'descending': false},
   mixins: [formMixin, mutationsMixin],

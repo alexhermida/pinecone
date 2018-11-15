@@ -5,12 +5,16 @@ name = "pypi"
 
 [packages]
 Django = "*"
+django-debug-toolbar = "*"
 django-filter = "*"
 django-model-utils = "*"
 djangorestframework = "*"
 Markdown = "*"
 django-cors-headers = "*"
 google-api-python-client = "*"
+"psycopg2-binary" = "*"
+google-auth = "*"
+requests = "*"
 
 [dev-packages]
 factory_boy = "*"

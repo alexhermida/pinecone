@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -85,8 +86,8 @@ WSGI_APPLICATION = 'conf.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, '../db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'pinecone',
     }
 }
 
@@ -130,6 +131,7 @@ LOCALE_PATHS = (os.path.join(PROJECT_DIR, 'locale'),)
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(PROJECT_DIR, 'staticfiles')
+STATICFILES_DIRS = []
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -149,10 +151,12 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+FILE_UPLOAD_PERMISSIONS = 0o644
+
 # Google Calendar configuration
 
 GOOGLE_CALENDAR_CREDENTIALS = os.path.join(PROJECT_DIR,
                                            os.environ.get(
-                                               'CALENDAR_CREDENTIALS_FILE',
+                                               'GOOGLE_APPLICATION_CREDENTIALS',
                                                ''))
 GOOGLE_CALENDAR_ID = os.environ.get('GOOGLE_CALENDAR_ID', None)
