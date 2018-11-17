@@ -28,3 +28,5 @@ class Event(TimeStampedModel):
                                                     default=False)
     google_event_id = models.TextField(_('google event id'), null=True)
     google_event_htmllink = models.TextField(_('google event link'), null=True)
+
+    import_id = models.TextField(_('import event id'), null=True)

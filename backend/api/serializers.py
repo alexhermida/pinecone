@@ -68,7 +68,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
         fields = ('id', 'url', 'title', 'description', 'group', 'link',
                   'location', 'start', 'duration', 'status', 'user', 'created',
                   'modified', 'google_calendar_published', 'google_event_id',
-                  'google_event_htmllink')
+                  'google_event_htmllink', 'import_id')
 
         read_only_fields = 'created', 'modified', 'google_event_id', \
                            'google_event_htmllink', 'status'
@@ -202,3 +202,10 @@ class EventCreateSerializer(serializers.ModelSerializer):
         data['end'] = data.get('start') + timedelta(minutes=duration)
 
         return data
+
+    def validate_import_id(self, value):
+        try:
+            models.Event.objects.get(import_id=value)
+            raise serializers.ValidationError(_('Event already exists'))
+        except models.Event.DoesNotExist:
+            return value
