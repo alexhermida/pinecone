@@ -4,8 +4,9 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils.translation import gettext as _
 
-from api import serializers
 from core import services
+
+from api import serializers
 
 
 class Command(BaseCommand):
