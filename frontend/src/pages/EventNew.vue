@@ -4,20 +4,6 @@
       <v-container grid-list-lg fill-height>
         <v-form ref="form" enctype="multipart/form-data" novalidate v-model="valid">
           <v-layout wrap>
-              <v-flex xs12>
-                <v-select
-                  :items="masters.statuses"
-                  v-model="event.status"
-                  :loading="loading"
-                  :cache-items="true"
-                  label="Estado"
-                  item-value="id"
-                  item-text="name"
-                  @change="fieldErrors.status = []"
-                  :error-messages="fieldErrors.status"
-                  required
-                ></v-select>
-              </v-flex>
               <v-flex xs12 md3>
                 <v-text-field
                   v-model="event.group"
@@ -119,17 +105,6 @@ export default {
   name: 'eventNew',
   props: ['isValid', 'showCancel', 'title', 'actionName'],
   mixins: [formMixin, mutationsMixin],
-  mounted () {
-    this.loading = true
-
-    let p1 = api.getEventStatuses().then(response => {
-      this.masters.statuses = response
-    })
-
-    Promise.all([p1]).then(() => {
-      this.loading = false
-    })
-  },
   data () {
     return {
       masters: {},
@@ -165,7 +140,6 @@ export default {
     submitData () {
       return {
         group: this.event.group,
-        status: this.event.status,
         title: this.event.title,
         description: this.event.description,
         link: this.event.link,
