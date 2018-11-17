@@ -1,3 +1,4 @@
+import datetime
 from django.conf import settings
 
 from google.oauth2 import service_account
@@ -49,8 +50,14 @@ class GoogleCalendarService:
         return self.service.calendarList().get(
             calendarId=self.calendarId).execute()
 
-    def list_events(self):
+    def list_events(self, time_min=None, time_max=None):
+        if not time_max:
+            dt = datetime.datetime.now() + datetime.timedelta(weeks=4)
+            time_max = dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+
         events = self.service.events().list(calendarId=self.calendarId,
                                             singleEvents=True,
-                                            orderBy='startTime').execute()
+                                            orderBy='startTime',
+                                            timeMin=time_min,
+                                            timeMax=time_max).execute()
         return events.get('items', [])
