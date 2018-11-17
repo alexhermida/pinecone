@@ -14,8 +14,12 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--calendar_id')
         parser.add_argument('--credentials_path')
-        parser.add_argument('--from_date', help=_("Add first date in format: 2018-11-01T00:00:00Z"))
-        parser.add_argument('--to_date', help=_("Add last date in format: 2018-11-01T00:00:00Z"))
+        parser.add_argument('--from_date', help=_(
+            "Add first date in format: 2018-11-01T00:00:00Z"))
+        parser.add_argument('--to_date', help=_(
+            "Add last date in format: 2018-11-01T00:00:00Z"))
+        parser.add_argument('--publish', action='store_true',
+                            help=_("Publish in destination calendar"))
 
     def handle(self, *args, **options):
         if not settings.DEBUG:
@@ -27,6 +31,7 @@ class Command(BaseCommand):
         credentials_path = options['credentials_path']
         time_min = options['from_date']
         time_max = options['to_date']
+        publish = options['publish']
 
         print('Importing events...')
 
@@ -57,7 +62,7 @@ class Command(BaseCommand):
                 'group': event.get('summary'),
                 'start': start,
                 'duration': duration,
-                'google_calendar_published': False,
+                'google_calendar_published': publish,
                 'import_id': event.get('id'),
             }
             serializer = serializers.EventCreateSerializer(data=data)
