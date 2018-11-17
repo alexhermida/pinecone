@@ -68,7 +68,7 @@ class Command(BaseCommand):
             serializer = serializers.EventCreateSerializer(data=data)
 
             if not serializer.is_valid():
-                print(serializer.errors)
+                print('Validation error:', serializer.errors)
                 continue
 
             serializer.save()
