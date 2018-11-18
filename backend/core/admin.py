@@ -9,3 +9,9 @@ class EventAdmin(admin.ModelAdmin):
                     'created', 'modified')
     search_fields = ('group', 'status', 'description')
     readonly_fields = ('created', 'modified')
+
+
+@admin.register(models.Group)
+class GroupAdmin(admin.ModelAdmin):
+    list_display = ('name', 'logo', 'links',)
+    search_fields = ('name', 'logo', 'links',)

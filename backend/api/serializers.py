@@ -209,3 +209,18 @@ class EventCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(_('Event already exists'))
         except models.Event.DoesNotExist:
             return value
+
+
+class GroupSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = models.Group
+        fields = ('id', 'name', 'logo', 'links',)
+
+    def validate_name(self, value):
+        try:
+            models.Group.objects.get(name=value)
+            raise serializers.ValidationError(_('Group already exists'))
+        except models.Group.DoesNotExist:
+            return value
+        except models.Group.MultipleObjectsReturned:
+            raise serializers.ValidationError(_('Group already exists'))
