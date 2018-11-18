@@ -8,12 +8,17 @@ from model_utils.fields import StatusField
 from model_utils.models import TimeStampedModel
 
 
+class Group(models.Model):
+    name = models.TextField(_('name'))
+    logo = models.TextField(_('logo'))
+    links = JSONField(_('links'))
+
+
 class Event(TimeStampedModel):
     STATUS = Choices(('draft', _('draft')), ('published', _('published')))
 
     title = models.TextField(_('title'), null=True)
     description = models.TextField(_('description'))
-    group = models.TextField(_('group'))
     link = models.TextField(_('link'))
     location = models.TextField(_('location'))
     status = StatusField(_('status'))
@@ -32,8 +37,4 @@ class Event(TimeStampedModel):
 
     import_id = models.TextField(_('import event id'), null=True)
 
-
-class Group(models.Model):
-    name = models.TextField(_('name'))
-    logo = models.TextField(_('logo'))
-    links = JSONField(_('links'))
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
