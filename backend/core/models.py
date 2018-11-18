@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import gettext as _
 
@@ -30,3 +31,9 @@ class Event(TimeStampedModel):
     google_event_htmllink = models.TextField(_('google event link'), null=True)
 
     import_id = models.TextField(_('import event id'), null=True)
+
+
+class Group(models.Model):
+    name = models.TextField(_('name'))
+    logo = models.TextField(_('logo'))
+    links = JSONField(_('links'))
