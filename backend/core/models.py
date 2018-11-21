@@ -37,4 +37,4 @@ class Event(TimeStampedModel):
 
     import_id = models.TextField(_('import event id'), null=True)
 
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
