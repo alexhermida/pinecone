@@ -4,13 +4,20 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils.translation import gettext as _
 
+from core import models
 from core import services
 
 from api import serializers
 
 
+def get_group(text):
+    for group in models.Group.objects.all():
+        if group.name in text:
+            return group.id
+
+
 class Command(BaseCommand):
-    help = 'Import events from a Google Calendar'
+    help = 'Simple task to import events from a Google Calendar'
 
     def add_arguments(self, parser):
         parser.add_argument('--calendar_id')
@@ -42,30 +49,28 @@ class Command(BaseCommand):
         gcalendar.initialize()
 
         for event in gcalendar.list_events(time_min, time_max):
-            dt_start = datetime.datetime.fromisoformat(
-                event.get('start').get('dateTime'))
-            dt_end = datetime.datetime.fromisoformat(
-                event.get('end').get('dateTime'))
+            start_date = event.get('start').get('dateTime') if event.get(
+                'start').get('dateTime') else event.get('start').get('date')
+            end_date = event.get('end').get('dateTime') if event.get(
+                'end').get('dateTime') else event.get('end').get('date')
+
+            dt_start = datetime.datetime.fromisoformat(start_date)
+            dt_end = datetime.datetime.fromisoformat(end_date)
             start = dt_start
             duration = (dt_end - dt_start).total_seconds() / 60
-
-            print('------------------')
-            print('Title:', event.get('summary'))
-            print('Description:', event.get('description'))
-            print('Start:', event.get('start').get('dateTime'))
-            print('gCal link:', event.get('htmlLink'))
-            print('------------------')
 
             data = {
                 'title': event.get('summary'),
                 'description': event.get('description') if event.get(
                     'description') else event.get('summary'),
-                'group': event.get('summary'),
+                'group': get_group(event.get('summary')),
                 'start': start,
                 'duration': duration,
                 'google_calendar_published': publish,
                 'import_id': event.get('id'),
             }
+            print(data, '\n')
+
             serializer = serializers.EventCreateSerializer(data=data)
 
             if not serializer.is_valid():
