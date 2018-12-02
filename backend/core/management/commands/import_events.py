@@ -20,14 +20,15 @@ class Command(BaseCommand):
     help = 'Simple task to import events from a Google Calendar'
 
     def add_arguments(self, parser):
-        parser.add_argument('--calendar_id')
-        parser.add_argument('--credentials_path')
+        parser.add_argument('--calendar_id', required=True)
+        parser.add_argument('--credentials_path', required=True)
         parser.add_argument('--from_date', help=_(
-            "Add first date in format: 2018-11-01T00:00:00Z"))
+            "Add first date in format: 2018-11-01T00:00:00Z"), required=True)
         parser.add_argument('--to_date', help=_(
-            "Add last date in format: 2018-11-01T00:00:00Z"))
+            "Add last date in format: 2018-11-01T00:00:00Z"), required=True)
         parser.add_argument('--publish', action='store_true',
-                            help=_("Publish in destination calendar"))
+                            help=_("Publish in destination calendar"),
+                            required=True)
 
     def handle(self, *args, **options):
         if not settings.DEBUG:
