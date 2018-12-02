@@ -32,7 +32,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'username', 'email', 'is_staff')
 
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Group
         fields = ('id', 'name', 'logo', 'links',)
@@ -47,8 +47,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
             raise serializers.ValidationError(_('Group already exists'))
 
 
-class EventSerializer(serializers.HyperlinkedModelSerializer):
-    group = GroupSerializer(required=False, allow_null=True)
+class EventSerializer(serializers.ModelSerializer):
     link = serializers.CharField(required=False, allow_blank=True)
     location = serializers.CharField(required=False, allow_blank=True)
     start = serializers.DateTimeField(required=False)
@@ -69,7 +68,6 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class EventCreateSerializer(serializers.ModelSerializer):
-    group = serializers.IntegerField(required=False, allow_null=True)
     link = serializers.CharField(required=False, allow_blank=True)
     location = serializers.CharField(required=False, allow_blank=True)
     start = serializers.DateTimeField(required=False)
@@ -89,6 +87,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
 
         read_only_fields = 'created', 'modified', 'google_event_id', \
                            'google_event_htmllink', 'status'
+        extra_kwargs = {'group': {'required': True}}
 
     def create(self, validated_data):
         if validated_data.get('google_calendar_published') is True:
