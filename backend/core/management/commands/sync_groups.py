@@ -10,11 +10,11 @@ class Command(BaseCommand):
     help = 'Synchronice groups from public json'
 
     def add_arguments(self, parser):
-        parser.add_argument('--members_url', help=_('External url for import'
-                                                    'members'))
+        parser.add_argument('url_members', help=_('External url for '
+                                                    'importing members'))
 
     def handle(self, *args, **options):
-        url = options['members_url']
+        url = options['url_members']
 
         print('Syncing groups...')
         response = requests.get(url).json()
@@ -23,7 +23,7 @@ class Command(BaseCommand):
             serializer = serializers.GroupSerializer(data=val)
 
             if not serializer.is_valid():
-                print('Validation error:', serializer.errors)
+                print('Validation error:', serializer.errors['name'][0])
                 continue
 
             serializer.save()
