@@ -31,12 +31,11 @@
                   item-text="name"
                   item-value="id"
                   label="Grupo"
-                  v-model="event.group"
                   @input="fieldErrors.group = []"
                   :error-messages="fieldErrors.group"
                 ></v-select>
               </v-flex>
-              <v-flex xs12>
+              <v-flex xs12 md9>
                 <v-text-field
                   v-model="event.title"
                   label="Título"

@@ -32,7 +32,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'username', 'email', 'is_staff')
 
 
-class GroupSerializer(serializers.ModelSerializer):
+class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Group
         fields = ('id', 'name', 'logo', 'links',)
@@ -47,7 +47,8 @@ class GroupSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(_('Group already exists'))
 
 
-class EventSerializer(serializers.ModelSerializer):
+class EventSerializer(serializers.HyperlinkedModelSerializer):
+    group = GroupSerializer()
     link = serializers.CharField(required=False, allow_blank=True)
     location = serializers.CharField(required=False, allow_blank=True)
     start = serializers.DateTimeField(required=False)
@@ -68,6 +69,8 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class EventCreateSerializer(serializers.ModelSerializer):
+    group = serializers.PrimaryKeyRelatedField(required=True,
+                                               queryset=models.Group.objects.all())
     link = serializers.CharField(required=False, allow_blank=True)
     location = serializers.CharField(required=False, allow_blank=True)
     start = serializers.DateTimeField(required=False)

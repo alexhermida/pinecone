@@ -8,7 +8,7 @@
   :row-action="toDetailRoute"
   hide-actions>
     <template slot="row" slot-scope="row" >
-      <td>{{ row.item.group }}</td>
+      <td>{{ row.item.group ? row.item.group.name : "" }}</td>
       <td>{{ row.item.location }}</td>
       <td><div class='list-item'>{{ row.item.title }}</div></td>
       <td><div class='list-item'>{{ row.item.description }}</div></td>
