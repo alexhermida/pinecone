@@ -11,7 +11,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('url_members', help=_('External url for '
-                                                    'importing members'))
+                                                  'importing members'))
 
     def handle(self, *args, **options):
         url = options['url_members']
