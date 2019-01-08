@@ -1,7 +1,7 @@
-import requests
-
 from django.core.management.base import BaseCommand
 from django.utils.translation import gettext as _
+
+import requests
 
 from api import serializers
 
