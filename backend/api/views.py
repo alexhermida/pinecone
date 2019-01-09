@@ -6,7 +6,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 
-from core.models import Event
+from core.models import Event, Group
 
 from api import serializers
 
@@ -68,3 +68,8 @@ class ClosetsEventViewSet(mixins.ListModelMixin,
     def get_queryset(self):
         return Event.objects.filter(start__gte=timezone.now()).order_by(
             '-id')
+
+
+class GroupViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = serializers.GroupSerializer

@@ -54,16 +54,20 @@ def test_get_events_descendent_order(admin_client):
 
 
 def test_create_event_with_required_fields(admin_client):
+    group = factories.GroupFactory()
+
     data = {'description': 'descrición evento test',
-            'group': 'VigoTechGroup'}
+            'group': group.id}
     response = admin_client.post('/api/events/', data)
 
     assert response.status_code == 201
 
 
 def test_create_draft_event(admin_client):
+    group = factories.GroupFactory()
+
     data = {'description': 'descrición evento test',
-            'group': 'VigoTechGroup'}
+            'group': group.id}
     response = admin_client.post('/api/events/', data)
 
     assert response.status_code == 201
@@ -103,9 +107,11 @@ def test_publish_created_event(admin_client):
 @patch('api.serializers.EventCreateSerializer.create_google_calendar_event',
        lambda x, y: (101, 'http://test.local'))
 def test_create_published_event(admin_client):
+    group = factories.GroupFactory()
+
     start_date = make_aware(dt.datetime(2030, 1, 1, 10))
     data = {'description': 'descrición evento test',
-            'group': 'VigoTechGroup', 'start': start_date,
+            'group': group.id, 'start': start_date,
             'duration': 2, 'google_calendar_published': True}
     response = admin_client.post('/api/events/', data)
 
@@ -117,9 +123,10 @@ def test_create_published_event(admin_client):
 @patch('api.serializers.EventCreateSerializer.remove_google_calendar_event',
        lambda x, y: True)
 def test_remove_published_event(admin_client):
+    group = factories.GroupFactory()
     start_date = make_aware(dt.datetime(2030, 1, 1, 10))
     data = {'description': 'descrición evento test',
-            'group': 'VigoTechGroup', 'start': start_date,
+            'group': group, 'start': start_date,
             'duration': 2, 'google_calendar_published': True,
             'google_event_id': 102,
             'google_event_htmllink': 'http://test.local',
@@ -144,11 +151,12 @@ def test_remove_published_event(admin_client):
 @patch('api.serializers.EventCreateSerializer.create_google_calendar_event',
        lambda x, y: (101, 'http://test.local'))
 def test_update_published_event(admin_client):
+    group = factories.GroupFactory()
     start_date = make_aware(dt.datetime(2030, 1, 1, 10))
     duration = 120
     end_date = start_date + dt.timedelta(minutes=duration)
     data = {'description': 'descrición evento test',
-            'group': 'VigoTechGroup', 'start': start_date,
+            'group': group, 'start': start_date,
             'duration': duration,
             'end': end_date,
             'google_calendar_published': True,
@@ -170,7 +178,8 @@ def test_update_published_event(admin_client):
 
 
 def test_prevent_create_event_without_description(admin_client):
-    data = {'group': 'VigoTechGroup'}
+    group = factories.GroupFactory()
+    data = {'group': group.id}
     response = admin_client.post('/api/events/', data)
 
     assert response.status_code == 400
@@ -185,8 +194,9 @@ def test_prevent_create_event_without_group(admin_client):
 
 
 def test_prevent_create_event_with_only_start_date(admin_client):
+    group = factories.GroupFactory()
     start_date = make_aware(dt.datetime(2019, 1, 1, 10))
-    data = {'group': 'VigoTechGroup', 'description': 'descrición evento test',
+    data = {'group': group.id, 'description': 'descrición evento test',
             'start': start_date}
     response = admin_client.post('/api/events/', data)
 
@@ -196,8 +206,10 @@ def test_prevent_create_event_with_only_start_date(admin_client):
 
 
 def test_prevent_publish_gcal_event_without_dates(admin_client):
+    group = factories.GroupFactory()
+
     data = {'description': 'descrición evento test',
-            'group': 'VigoTechGroup',
+            'group': group.id,
             'google_calendar_published': True}
     response = admin_client.post('/api/events/', data)
 
@@ -208,8 +220,9 @@ def test_prevent_publish_gcal_event_without_dates(admin_client):
 
 
 def test_prevent_publish_gcal_event_without_start_date(admin_client):
+    group = factories.GroupFactory()
     data = {'description': 'descrición evento test',
-            'group': 'VigoTechGroup', 'end': dt.datetime.now(),
+            'group': group.id, 'end': dt.datetime.now(),
             'google_calendar_published': True}
     response = admin_client.post('/api/events/', data)
 
@@ -220,8 +233,9 @@ def test_prevent_publish_gcal_event_without_start_date(admin_client):
 
 
 def test_prevent_publish_gcal_event_without_duration(admin_client):
+    group = factories.GroupFactory()
     data = {'description': 'descrición evento test',
-            'group': 'VigoTechGroup', 'end': dt.datetime.now(),
+            'group': group.id, 'end': dt.datetime.now(),
             'google_calendar_published': True}
     response = admin_client.post('/api/events/', data)
 

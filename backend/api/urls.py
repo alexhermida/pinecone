@@ -6,12 +6,13 @@ from . import views
 
 router = DefaultRouter()
 
-router.register(r'users', views.UserViewSet)
+router.register(r'groups', views.GroupViewSet)
 router.register(r'events', views.EventViewSet)
 router.register(r'events-statuses', views.EventStatusViewSet,
                 basename='statuses')
 router.register(r'events-closests', views.ClosetsEventViewSet,
                 basename='closests-events')
+router.register(r'users', views.UserViewSet)
 
 urlpatterns = router.urls
 

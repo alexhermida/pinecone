@@ -32,7 +32,23 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'username', 'email', 'is_staff')
 
 
+class GroupSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = models.Group
+        fields = ('id', 'name', 'logo', 'links',)
+
+    def validate_name(self, value):
+        try:
+            models.Group.objects.get(name=value)
+            raise serializers.ValidationError(_('Group already exists'))
+        except models.Group.DoesNotExist:
+            return value
+        except models.Group.MultipleObjectsReturned:
+            raise serializers.ValidationError(_('Group already exists'))
+
+
 class EventSerializer(serializers.HyperlinkedModelSerializer):
+    group = GroupSerializer()
     link = serializers.CharField(required=False, allow_blank=True)
     location = serializers.CharField(required=False, allow_blank=True)
     start = serializers.DateTimeField(required=False)
@@ -53,6 +69,8 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class EventCreateSerializer(serializers.ModelSerializer):
+    group = serializers.PrimaryKeyRelatedField(required=True,
+                                               queryset=models.Group.objects.all())
     link = serializers.CharField(required=False, allow_blank=True)
     location = serializers.CharField(required=False, allow_blank=True)
     start = serializers.DateTimeField(required=False)
@@ -72,6 +90,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
 
         read_only_fields = 'created', 'modified', 'google_event_id', \
                            'google_event_htmllink', 'status'
+        extra_kwargs = {'group': {'required': True}}
 
     def create(self, validated_data):
         if validated_data.get('google_calendar_published') is True:

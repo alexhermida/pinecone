@@ -72,5 +72,8 @@ export default {
   },
   getEventClosets () {
     return this.request({ method: 'get' }, 'events-closests')
+  },
+  getGroups () {
+    return this.request({ method: 'get' }, 'groups')
   }
 }

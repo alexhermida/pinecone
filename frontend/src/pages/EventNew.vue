@@ -4,7 +4,7 @@
       <v-container grid-list-lg fill-height>
         <v-form ref="form" enctype="multipart/form-data" novalidate v-model="valid">
           <v-layout wrap>
-              <v-flex xs12 md3>
+              <!-- <v-flex xs12 md3>
                 <v-text-field
                   v-model="event.group"
                   label="Grupo"
@@ -12,6 +12,17 @@
                   @input="fieldErrors.group = []"
                   :error-messages="fieldErrors.group"
                 ></v-text-field>
+              </v-flex> -->
+              <v-flex xs12 md3 d-flex>
+                <v-select
+                  :items="masters.groups"
+                  item-text="name"
+                  item-value="id"
+                  label="Grupo"
+                  v-model="event.group"
+                  @input="fieldErrors.group = []"
+                  :error-messages="fieldErrors.group"
+                ></v-select>
               </v-flex>
               <v-flex xs12 md9>
                 <v-text-field
@@ -105,6 +116,17 @@ export default {
   name: 'eventNew',
   props: ['isValid', 'showCancel', 'title', 'actionName'],
   mixins: [formMixin, mutationsMixin],
+  mounted () {
+    this.loading = true
+
+    let p1 = api.getGroups().then(response => {
+      this.masters.groups = response
+    })
+
+    Promise.all([p1]).then(() => {
+      this.loading = false
+    })
+  },
   data () {
     return {
       masters: {},
