@@ -12,7 +12,12 @@ import store from './store'
 import App from './App'
 
 Vue.config.productionTip = false
-Vue.use(Vuetify)
+
+Vue.use(Vuetify, {
+  theme: {
+    primary: '#e84a5f'
+  }
+})
 
 Vue.config.productionTip = false
 Vue.config.app = process.env

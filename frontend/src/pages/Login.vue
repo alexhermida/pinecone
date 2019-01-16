@@ -6,13 +6,15 @@
           <v-layout align-center justify-center>
             <v-flex xs12 sm8 md4>
               <v-form ref="form" v-on:submit.prevent="submit" v-model="valid">
+
+                <v-flex xs12 class="logo-wrapper mb-4">
+                  <v-layout align-center justify-center>
+                    <img src="/static/img/vigotech-white-horizontal.png" alt="VigoTech">
+                  </v-layout>
+                </v-flex>
+
                 <v-card class="login-box-wrapper elevation-12">
                   <v-card-text>
-                      <v-flex xs12 class="logo-wrapper">
-                        <v-layout align-center justify-center>
-                          <img src="/static/img/vigotech-logo-120px.png" alt="VigoTech">
-                        </v-layout>
-                      </v-flex>
                       <v-text-field
                         @keyup.enter.native="logIn"
                         prepend-icon="person"
@@ -38,7 +40,7 @@
                         ></v-text-field>
                   </v-card-text>
                   <v-card-actions>
-                    <v-btn type="submit" block color="red" dark>Acceder</v-btn>
+                    <v-btn type="submit" block color="primary" dark>Acceder</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-form>

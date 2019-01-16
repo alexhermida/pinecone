@@ -2,7 +2,7 @@
   <div id="app" :class="`page ${currentRouteName}-page`">
     <v-app>
       <v-navigation-drawer v-if="authenticated" fixed :clipped="$vuetify.breakpoint.lgAndUp" app v-model="drawer">
-        <v-toolbar flat color="red" dark class="transparent">
+        <v-toolbar flat color="primary" dark class="transparent">
           <v-list dense>
             <v-list-tile avatar>
               <v-avatar>
@@ -53,7 +53,7 @@
         </v-list>
       </v-navigation-drawer>
 
-      <v-toolbar v-if="authenticated" color="red" dark :clipped-left="$vuetify.breakpoint.lgAndUp" fixed app>
+      <v-toolbar v-if="authenticated" color="primary" dark :clipped-left="$vuetify.breakpoint.lgAndUp" fixed app>
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         <v-toolbar-title>{{ $route.meta.title($route) }}</v-toolbar-title>
         <v-spacer></v-spacer>
@@ -103,6 +103,10 @@ export default {
 </script>
 
 <style lang="stylus">
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700');
-@import './assets/stylus/app.styl';
+  @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700');
+  @import './assets/stylus/app.styl';
+</style>
+
+<style lang="scss">
+  @import './assets/scss/pinecone.scss';
 </style>
