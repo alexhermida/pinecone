@@ -60,8 +60,8 @@ export default new Vuex.Store({
     [ACTION_SUCCESS] (state, message) {
       Object.assign(state.notify, {
         message: message,
-        backgroundColor: null,
-        textColor: 'success',
+        backgroundColor: 'success',
+        textColor: 'white',
         visible: true
       })
     },

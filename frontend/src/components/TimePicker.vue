@@ -16,7 +16,11 @@
       :error-messages="errors"
       readonly
     ></v-text-field>
-    <v-time-picker v-model="selectedTime" scrollable>
+    <v-time-picker
+        v-model="selectedTime"
+        format="24hr"
+        scrollable
+    >
       <v-spacer></v-spacer>
       <v-btn flat color="primary" @click="modal = false">Cancelar</v-btn>
       <v-btn flat color="primary" @click="accept()">Aceptar</v-btn>
